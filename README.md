@@ -1,18 +1,30 @@
-# update_helper
+# Update Helper
 
-A new Flutter plugin project.
+Help you easier to control the update dialog. It also supports the feature that force the app to update to continue using.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+``` dart
+final latestVersion = '1.0.0';
+final bannedVersions = ['0.8.0','0.9.0'];
+final currentVersion = '0.9.0';
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` in this directory.
-You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+await UpdateHelper.initial(
+    context: context,
+    updateConfig: UpdateConfig(
+    android: UpdatePlatformConfig(
+        latestVersion: latestVersion,
+    ),
+    ),
+    title: 'Cập Nhật',
+    content: 'Đã có phiên bản cập nhật mới!\n\n'
+        'Phiên bản hiện tại: %currentVersion\n'
+        'Phiên bản mới: %latestVersion\n\n'
+        'Bạn có muốn cập nhật không?',
+    forceUpdate: bannedVersions.contains(currentVersion),
+    forceUpdateContent: 'Đã có phiên bản cập nhật mới!\n\n'
+        'Phiên bản hiện tại: %currentVersion\n'
+        'Phiên bản mới: %latestVersion\n\n'
+        'Bạn cần cập nhật để tiếp tục sử dụng',
+);
+```

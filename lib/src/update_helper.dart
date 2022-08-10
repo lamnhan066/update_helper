@@ -89,7 +89,8 @@ class UpdateHelper {
                   child: Text(okButtonText),
                   onPressed: () async {
                     if (UniversalPlatform.isAndroid ||
-                        UniversalPlatform.isIOS) {
+                        UniversalPlatform.isIOS ||
+                        UniversalPlatform.isMacOS) {
                       InAppReview.instance.openStoreListing(
                           appStoreId: packageInfo.packageName);
                     } else {
