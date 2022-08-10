@@ -12,7 +12,7 @@ class UpdateHelper {
 
   static Future<void> initial({
     required BuildContext context,
-    required UpdateConfig latestConfig,
+    required UpdateConfig updateConfig,
     String title = 'Update Information',
     String content = 'New version is available!\n\n'
         'Current version: %currentVersion\n'
@@ -29,22 +29,23 @@ class UpdateHelper {
   }) async {
     _isDebug = isDebug;
 
-    UpdatePlatformConfig? updateConfig;
+    UpdatePlatformConfig? updatePlatformConfig;
     if (UniversalPlatform.isAndroid) {
-      updateConfig = latestConfig.android;
+      updatePlatformConfig = updateConfig.android;
     } else if (UniversalPlatform.isIOS) {
-      updateConfig = latestConfig.ios;
+      updatePlatformConfig = updateConfig.ios;
     } else if (UniversalPlatform.isWeb) {
-      updateConfig = latestConfig.web;
+      updatePlatformConfig = updateConfig.web;
     } else if (UniversalPlatform.isWindows) {
-      updateConfig = latestConfig.windows;
+      updatePlatformConfig = updateConfig.windows;
     } else if (UniversalPlatform.isLinux) {
-      updateConfig = latestConfig.linux;
+      updatePlatformConfig = updateConfig.linux;
     } else if (UniversalPlatform.isMacOS) {
-      updateConfig = latestConfig.macos;
+      updatePlatformConfig = updateConfig.macos;
     }
 
-    if (updateConfig == null || updateConfig.latestVersion == null) {
+    if (updatePlatformConfig == null ||
+        updatePlatformConfig.latestVersion == null) {
       _print('Config from this platform is null');
       return;
     }
@@ -54,7 +55,7 @@ class UpdateHelper {
     final currentVersion = packageInfo.version;
     _print('current version: $currentVersion');
 
-    if (updateConfig.latestVersion!.compareTo(currentVersion) <= 0) {
+    if (updatePlatformConfig.latestVersion!.compareTo(currentVersion) <= 0) {
       _print('Current version is up to date');
       return;
     }
@@ -76,7 +77,8 @@ class UpdateHelper {
             Text(
               (forceUpdate ? forceUpdateContent : content)
                   .replaceFirst('%currentVersion', currentVersion)
-                  .replaceFirst('%latestVersion', updateConfig!.latestVersion!),
+                  .replaceFirst(
+                      '%latestVersion', updatePlatformConfig!.latestVersion!),
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -91,10 +93,11 @@ class UpdateHelper {
                       InAppReview.instance.openStoreListing(
                           appStoreId: packageInfo.packageName);
                     } else {
-                      if (updateConfig!.storeUrl != null &&
-                          await canLaunchUrlString(updateConfig.storeUrl!)) {
+                      if (updatePlatformConfig!.storeUrl != null &&
+                          await canLaunchUrlString(
+                              updatePlatformConfig.storeUrl!)) {
                         await launchUrlString(
-                          updateConfig.storeUrl!,
+                          updatePlatformConfig.storeUrl!,
                           mode: LaunchMode.externalApplication,
                         );
                       }
