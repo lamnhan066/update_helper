@@ -11,20 +11,37 @@ class UpdateHelper {
   static bool _isDebug = false;
 
   static Future<void> initial({
+    /// Current context.
     required BuildContext context,
+
+    /// Configuration for each platform.
     required UpdateConfig updateConfig,
+
+    /// Force update on this version. The user can't close this dialog until it's updated.
+    bool forceUpdate = false,
+
+    /// Title of the dialog.
     String title = 'Update Information',
+
+    /// Content of the dialog (No force).
     String content = 'New version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
         'Do you want to update?',
+
+    /// OK button text
     String okButtonText = 'OK',
+
+    /// Later button text
     String laterButtonText = 'Later',
-    bool forceUpdate = false,
+
+    /// Content of the dialog in force mode.
     String forceUpdateContent = 'New version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
         'You have to update to continue using the app!',
+
+    /// Print debuglog.
     bool isDebug = false,
   }) async {
     _isDebug = isDebug;
