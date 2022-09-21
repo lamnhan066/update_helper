@@ -33,7 +33,7 @@ You can use [satisfied_version](https://pub.dev/packages/satisfied_version) plug
 
 ``` dart
 final latestVersion = '1.0.0';
-final bannedVersions = ['<=0.9.0'];
+final bannedVersions = ['<=0.9.0']; // <-------
 final currentVersion = '0.9.0';
 
 await UpdateHelper.initial(
@@ -48,7 +48,7 @@ await UpdateHelper.initial(
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'
         'Bạn có muốn cập nhật không?',
-    forceUpdate: currentVersion.isSatisfiedVersion(bannedVersions),
+    forceUpdate: currentVersion.isSatisfiedVersion(bannedVersions), // <-------
     forceUpdateContent: 'Đã có phiên bản cập nhật mới!\n\n'
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'

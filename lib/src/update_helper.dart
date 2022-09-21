@@ -83,53 +83,56 @@ class UpdateHelper {
       builder: (BuildContext context) => AlertDialog(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12.0))),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const Divider(),
-            Text(
-              (forceUpdate ? forceUpdateContent : content)
-                  .replaceFirst('%currentVersion', currentVersion)
-                  .replaceFirst(
-                      '%latestVersion', updatePlatformConfig!.latestVersion!),
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                MaterialButton(
-                  child: Text(okButtonText),
-                  onPressed: () async {
-                    if (UniversalPlatform.isAndroid ||
-                        UniversalPlatform.isIOS ||
-                        UniversalPlatform.isMacOS) {
-                      InAppReview.instance.openStoreListing(
-                          appStoreId: packageInfo.packageName);
-                    } else {
-                      if (updatePlatformConfig!.storeUrl != null &&
-                          await canLaunchUrlString(
-                              updatePlatformConfig.storeUrl!)) {
-                        await launchUrlString(
-                          updatePlatformConfig.storeUrl!,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    }
-                  },
-                ),
-                if (!forceUpdate)
+        content: WillPopScope(
+          onWillPop: () async => forceUpdate ? false : true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Divider(),
+              Text(
+                (forceUpdate ? forceUpdateContent : content)
+                    .replaceFirst('%currentVersion', currentVersion)
+                    .replaceFirst(
+                        '%latestVersion', updatePlatformConfig!.latestVersion!),
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
                   MaterialButton(
-                    child: Text(laterButtonText),
-                    onPressed: () => Navigator.pop(context),
-                  )
-              ],
-            ),
-          ],
+                    child: Text(okButtonText),
+                    onPressed: () async {
+                      if (UniversalPlatform.isAndroid ||
+                          UniversalPlatform.isIOS ||
+                          UniversalPlatform.isMacOS) {
+                        InAppReview.instance.openStoreListing(
+                            appStoreId: packageInfo.packageName);
+                      } else {
+                        if (updatePlatformConfig!.storeUrl != null &&
+                            await canLaunchUrlString(
+                                updatePlatformConfig.storeUrl!)) {
+                          await launchUrlString(
+                            updatePlatformConfig.storeUrl!,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      }
+                    },
+                  ),
+                  if (!forceUpdate)
+                    MaterialButton(
+                      child: Text(laterButtonText),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

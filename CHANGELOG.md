@@ -1,4 +1,8 @@
-## 0.0.1+2 
+## 0.0.1+3
+
+* Prevent users from pressing the back button to close the dialog.
+
+## 0.0.1+2
 
 * Improved public apis comments.
 
