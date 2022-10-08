@@ -1,3 +1,7 @@
+## 0.0.1+4
+
+* Add `satisfied_version` plugin to control bannedVersions.
+
 ## 0.0.1+3
 
 * Prevent users from pressing the back button to close the dialog.

@@ -29,7 +29,7 @@ await UpdateHelper.initial(
 );
 ```
 
-You can use [satisfied_version](https://pub.dev/packages/satisfied_version) plugin to easier to control banned versions. For example:
+This plugin also uses [satisfied_version](https://pub.dev/packages/satisfied_version) plugin to make it to easier to control banned versions. For example:
 
 ``` dart
 final latestVersion = '1.0.0';
@@ -48,7 +48,7 @@ await UpdateHelper.initial(
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'
         'Bạn có muốn cập nhật không?',
-    forceUpdate: currentVersion.isSatisfiedVersion(bannedVersions), // <-------
+    bannedVersions: bannedVersions, // <--------
     forceUpdateContent: 'Đã có phiên bản cập nhật mới!\n\n'
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'

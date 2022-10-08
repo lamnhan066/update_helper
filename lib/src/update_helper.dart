@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:satisfied_version/satisfied_version.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -19,6 +20,11 @@ class UpdateHelper {
 
     /// Force update on this version. The user can't close this dialog until it's updated.
     bool forceUpdate = false,
+
+    /// Use `satisfied_version` package to compare with current version to force update.
+    ///
+    /// Ex: ["<=1.0.0"] means the app have to update if current version <= 1.0.0
+    List<String> bannedVersions = const [],
 
     /// Title of the dialog.
     String title = 'Update Information',
@@ -75,6 +81,11 @@ class UpdateHelper {
     if (updatePlatformConfig.latestVersion!.compareTo(currentVersion) <= 0) {
       _print('Current version is up to date');
       return;
+    }
+
+    if (!forceUpdate && SatisfiedVersion.list(currentVersion, bannedVersions)) {
+      _print('Current version have to force to update');
+      forceUpdate = true;
     }
 
     await showDialog(
