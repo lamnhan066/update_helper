@@ -14,6 +14,9 @@ class UpdatePlatformConfig {
 
 /// Update configuration for each platform
 class UpdateConfig {
+  /// Default update configuration for all platforms
+  final UpdatePlatformConfig? defaultConfig;
+
   /// Update configuration for android
   final UpdatePlatformConfig? android;
 
@@ -33,6 +36,7 @@ class UpdateConfig {
   final UpdatePlatformConfig? macos;
 
   UpdateConfig({
+    this.defaultConfig,
     this.android,
     this.ios,
     this.web,

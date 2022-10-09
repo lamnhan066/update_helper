@@ -27,7 +27,7 @@ class UpdateHelper {
     List<String> bannedVersions = const [],
 
     /// Title of the dialog.
-    String title = 'Update Information',
+    String title = 'Update',
 
     /// Content of the dialog (No force).
     String content = 'New version is available!\n\n'
@@ -46,6 +46,16 @@ class UpdateHelper {
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
         'You have to update to continue using the app!',
+
+    /// Show changelogs if `changelogs` is not empty.
+    ///
+    /// Changelogs:
+    /// - Changelog 1
+    /// - Changelog 2
+    List<String> changelogs = const [],
+
+    /// Changelogs text: 'Changelogs' -> 'Changelogs:'
+    String changelogsText = 'Changelogs',
 
     /// Print debuglog.
     bool isDebug = false,
@@ -66,6 +76,8 @@ class UpdateHelper {
     } else if (UniversalPlatform.isMacOS) {
       updatePlatformConfig = updateConfig.macos;
     }
+
+    updatePlatformConfig ??= updateConfig.defaultConfig;
 
     if (updatePlatformConfig == null ||
         updatePlatformConfig.latestVersion == null) {
@@ -98,10 +110,12 @@ class UpdateHelper {
           onWillPop: () async => forceUpdate ? false : true,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 title,
                 style: const TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
               const Divider(),
               Text(
@@ -109,8 +123,29 @@ class UpdateHelper {
                     .replaceFirst('%currentVersion', currentVersion)
                     .replaceFirst(
                         '%latestVersion', updatePlatformConfig!.latestVersion!),
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 15),
               ),
+              if (changelogs.isNotEmpty) ...[
+                const Divider(),
+                Text(
+                  '$changelogsText:',
+                  style: const TextStyle(fontSize: 15),
+                ),
+                const SizedBox(height: 4),
+              ],
+              if (changelogs.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final text in changelogs) ...[
+                      Text(
+                        '- $text',
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                      const SizedBox(height: 4),
+                    ]
+                  ],
+                ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
