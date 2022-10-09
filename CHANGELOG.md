@@ -1,6 +1,14 @@
+## 0.0.2
+
+* Add `defaultConfig` in `UpdateConfig` to define default value for all platforms.
+* Add showing changelogs feature.
+* Rename title from `Update Information` to `Update`.
+* Change font size from 16 to 15.
+* Update README.
+
 ## 0.0.1+4
 
-* Add `satisfied_version` plugin to control bannedVersions.
+* Add `satisfied_version` plugin to control `bannedVersions`.
 
 ## 0.0.1+3
 
