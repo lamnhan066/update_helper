@@ -93,20 +93,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
-  in_app_review:
-    dependency: transitive
-    description:
-      name: in_app_review
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
-  in_app_review_platform_interface:
-    dependency: transitive
-    description:
-      name: in_app_review_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.3"
   js:
     dependency: transitive
     description:
@@ -191,13 +177,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.2"
-  platform:
-    dependency: transitive
-    description:
-      name: platform
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0"
   plugin_platform_interface:
     dependency: transitive
     description:

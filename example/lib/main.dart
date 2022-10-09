@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       UpdateHelper.initial(
         context: context,
         updateConfig: UpdateConfig(
-          ios: UpdatePlatformConfig(latestVersion: '3.0.0'),
+          defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
         ),
         forceUpdate: true,
         changelogs: [
