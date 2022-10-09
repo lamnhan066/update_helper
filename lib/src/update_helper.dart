@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:satisfied_version/satisfied_version.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:http/http.dart' as http;
 
 part 'utils.dart';
 
@@ -110,7 +112,6 @@ class UpdateHelper {
           onWillPop: () async => forceUpdate ? false : true,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 title,
@@ -153,15 +154,43 @@ class UpdateHelper {
                   MaterialButton(
                     child: Text(okButtonText),
                     onPressed: () async {
-                      if (UniversalPlatform.isAndroid ||
-                          UniversalPlatform.isIOS ||
+                      if (UniversalPlatform.isAndroid) {
+                        try {
+                          _print(
+                              'Android try to launch: market://details?id=${packageInfo.packageName}');
+                          await launchUrlString(
+                            'market://details?id=${packageInfo.packageName}',
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } finally {
+                          _print(
+                              'Android try to launch: https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
+                          await launchUrlString(
+                            'https://play.google.com/store/apps/details?id=${packageInfo.packageName}',
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      }
+                      if (UniversalPlatform.isIOS ||
                           UniversalPlatform.isMacOS) {
-                        InAppReview.instance.openStoreListing(
-                            appStoreId: packageInfo.packageName);
+                        final response = await http.get((Uri.parse(
+                            'http://itunes.apple.com/lookup?bundleId=${packageInfo.packageName}')));
+                        final json = jsonDecode(response.body);
+
+                        _print('iOS get json from bundleId: $json');
+                        _print(
+                            'iOS get trackId: ${json['results'][0]['trackId']}');
+
+                        launchUrlString(
+                          'https://apps.apple.com/app/id${json['results'][0]['trackId']}',
+                          mode: LaunchMode.externalApplication,
+                        );
                       } else {
                         if (updatePlatformConfig!.storeUrl != null &&
                             await canLaunchUrlString(
                                 updatePlatformConfig.storeUrl!)) {
+                          _print(
+                              'Other platforms, try to launch: ${updatePlatformConfig.storeUrl}');
                           await launchUrlString(
                             updatePlatformConfig.storeUrl!,
                             mode: LaunchMode.externalApplication,

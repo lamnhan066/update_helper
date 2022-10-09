@@ -10,11 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  in_app_review: ^2.0.4
   package_info_plus: ^1.4.3+1
   universal_platform: ^1.0.0+1
   url_launcher: ^6.1.5
   satisfied_version: ^0.0.1+2
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
