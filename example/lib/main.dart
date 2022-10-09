@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:update_helper/update_helper.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -13,15 +14,32 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      UpdateHelper.initial(
+        context: context,
+        updateConfig: UpdateConfig(
+          ios: UpdatePlatformConfig(latestVersion: '3.0.0'),
+        ),
+        forceUpdate: true,
+        changelogs: [
+          'Bugs fix and improve performances',
+          'New feature: Add update dialog',
+        ],
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: const Center(
-          child: Text(''),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: const Center(
+        child: Text(''),
       ),
     );
   }
