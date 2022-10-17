@@ -1,3 +1,9 @@
+## 0.1.0-rc1
+
+* Upgrade dependencies.
+* Remove `in_app_review` package.
+* Add example.
+
 ## 0.0.2
 
 * Add `defaultConfig` in `UpdateConfig` to define default value for all platforms.

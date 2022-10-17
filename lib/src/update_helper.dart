@@ -162,7 +162,7 @@ class UpdateHelper {
                             'market://details?id=${packageInfo.packageName}',
                             mode: LaunchMode.externalApplication,
                           );
-                        } finally {
+                        } catch (_) {
                           _print(
                               'Android try to launch: https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
                           await launchUrlString(
