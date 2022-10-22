@@ -2,10 +2,10 @@
 
 Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
 
-Screenshots (Left: don't force to update, right: force to update and users cannot close the dialog):
+Screenshots (Left/Above: don't force to update, Right/Below: force to update and users cannot close the dialog):
 
-<img src="images/noforce.png?raw=true" width="256"/>
-<img src="images/force.png?raw=true" width="256"/>
+<img src="https://raw.githubusercontent.com/vursin/update_helper/main/images/noforce.png" width="256"/>
+<img src="https://raw.githubusercontent.com/vursin/update_helper/main/images/force.png" width="256"/>
 
 ## Usage
 

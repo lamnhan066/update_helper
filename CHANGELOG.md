@@ -1,3 +1,8 @@
+## 0.1.0-rc2
+
+* Update README: Update image URL.
+* Update dependencies.
+
 ## 0.1.0-rc1
 
 * Upgrade dependencies.
