@@ -1,3 +1,8 @@
+## 0.1.0-rc3
+
+* Add `failToOpenStoreError` parameter to show the error log if the app can't open the store.
+* Add class `UpdateHelperForceMock` and `UpdateHelpereMock` to improve the test.
+
 ## 0.1.0-rc2
 
 * Update README: Update image URL.

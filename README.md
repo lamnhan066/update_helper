@@ -50,6 +50,9 @@ await UpdateHelper.initial(
         'Bugs fix and improve performances',
         'New feature: Add update dialog',
     ],
+    failToOpenStoreError: 'Got an error when trying to open the Store, '
+        'please update the app manually. '
+        '\nSorry for the inconvenience.\n(Logs: %error)',
 );
 ```
 
@@ -58,4 +61,4 @@ await UpdateHelper.initial(
 - The plugin will replace `%currentVersion` and `%latestVersion` with it's real version.
 - You can use only `forceUpdate` or `bannedVersions` because `forceUpdate` will be `true` if the current version is satisfied with `bannedVersions`.
 - You can read more about how to use `bannedVersions` on [satisfied_version](https://pub.dev/packages/satisfied_version) plugin.
-- 
+- Show an error log when the app can't open the store, you can modify it using the `failToOpenStoreError` parameter. The plugin will replace the `%error` with it's real error log.

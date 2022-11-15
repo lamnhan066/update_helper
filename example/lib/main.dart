@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:update_helper/update_helper.dart';
 
 void main() {
   runApp(const MaterialApp(home: MyApp()));
@@ -18,17 +17,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      UpdateHelper.initial(
-        context: context,
-        updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
-        ),
-        forceUpdate: true,
-        changelogs: [
-          'Bugs fix and improve performances',
-          'New feature: Add update dialog',
-        ],
-      );
+      // UpdateHelperMock.initial(context: context);
+      // UpdateHelperForceMock.initial(context: context);
     });
   }
 

@@ -1,17 +1,63 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:satisfied_version/satisfied_version.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:http/http.dart' as http;
 
 part 'utils.dart';
+
+@visibleForTesting
+class UpdateHelperForceMock {
+  static initial({
+    /// Current context.
+    required BuildContext context,
+  }) {
+    UpdateHelper._packageName = 'com.vursin.othello';
+    return UpdateHelper.initial(
+      context: context,
+      updateConfig: UpdateConfig(
+        defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
+      ),
+      forceUpdate: true,
+      changelogs: [
+        'Bugs fix and improve performances',
+        'New feature: Add update dialog',
+      ],
+      isDebug: true,
+    );
+  }
+}
+
+@visibleForTesting
+class UpdateHelperMock {
+  static initial({
+    /// Current context.
+    required BuildContext context,
+  }) {
+    UpdateHelper._packageName = 'com.vursin.othello';
+    return UpdateHelper.initial(
+      context: context,
+      updateConfig: UpdateConfig(
+        defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
+      ),
+      forceUpdate: false,
+      changelogs: [
+        'Bugs fix and improve performances',
+        'New feature: Add update dialog',
+      ],
+      isDebug: true,
+    );
+  }
+}
 
 // TODO: Make this plugin works on more platforms. It currently depend on in_app_review
 class UpdateHelper {
   static bool _isDebug = false;
+
+  static String _packageName = '';
 
   static Future<void> initial({
     /// Current context.
@@ -32,6 +78,9 @@ class UpdateHelper {
     String title = 'Update',
 
     /// Content of the dialog (No force).
+    ///
+    /// `%currentVersion` will be replaced with the current version
+    /// `%latestVersion` wull be replaced with the latest version
     String content = 'New version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
@@ -58,6 +107,13 @@ class UpdateHelper {
 
     /// Changelogs text: 'Changelogs' -> 'Changelogs:'
     String changelogsText = 'Changelogs',
+
+    /// Show this text if the Store cannot be opened
+    ///
+    /// `%error` will be replaced with the error log.
+    String failToOpenStoreError = 'Got an error when trying to open the Store, '
+        'please update the app manually. '
+        '\nSorry for the inconvenience.\n(Logs: %error)',
 
     /// Print debuglog.
     bool isDebug = false,
@@ -105,68 +161,142 @@ class UpdateHelper {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),
-        content: WillPopScope(
-          onWillPop: () async => forceUpdate ? false : true,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+      builder: (BuildContext context) => _StatefulAlert(
+          forceUpdate: forceUpdate,
+          title: title,
+          content: content,
+          forceUpdateContent: forceUpdateContent,
+          changelogs: changelogs,
+          changelogsText: changelogsText,
+          okButtonText: okButtonText,
+          laterButtonText: laterButtonText,
+          updatePlatformConfig: updatePlatformConfig!,
+          currentVersion: currentVersion,
+          packageInfo: packageInfo,
+          failToOpenStoreError: failToOpenStoreError),
+    );
+  }
+
+  static void _print(Object? object) =>
+      // ignore: avoid_print
+      _isDebug ? print('[Update Helper] $object') : null;
+}
+
+class _StatefulAlert extends StatefulWidget {
+  const _StatefulAlert({
+    Key? key,
+    required this.forceUpdate,
+    required this.title,
+    required this.content,
+    required this.forceUpdateContent,
+    required this.changelogs,
+    required this.changelogsText,
+    required this.okButtonText,
+    required this.laterButtonText,
+    required this.updatePlatformConfig,
+    required this.currentVersion,
+    required this.packageInfo,
+    required this.failToOpenStoreError,
+  }) : super(key: key);
+
+  final bool forceUpdate;
+  final String title;
+  final String content;
+  final String forceUpdateContent;
+  final List<String> changelogs;
+  final String changelogsText;
+  final String okButtonText;
+  final String laterButtonText;
+  final UpdatePlatformConfig updatePlatformConfig;
+  final String currentVersion;
+  final PackageInfo packageInfo;
+  final String failToOpenStoreError;
+
+  @override
+  State<_StatefulAlert> createState() => _StatefulAlertState();
+}
+
+class _StatefulAlertState extends State<_StatefulAlert> {
+  String errorText = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+      content: WillPopScope(
+        onWillPop: () async => widget.forceUpdate ? false : true,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const Divider(),
+            Text(
+              (widget.forceUpdate ? widget.forceUpdateContent : widget.content)
+                  .replaceAll('%currentVersion', widget.currentVersion)
+                  .replaceAll('%latestVersion',
+                      widget.updatePlatformConfig.latestVersion!),
+              style: const TextStyle(fontSize: 15),
+            ),
+            if (widget.changelogs.isNotEmpty) ...[
               const Divider(),
               Text(
-                (forceUpdate ? forceUpdateContent : content)
-                    .replaceFirst('%currentVersion', currentVersion)
-                    .replaceFirst(
-                        '%latestVersion', updatePlatformConfig!.latestVersion!),
+                '${widget.changelogsText}:',
                 style: const TextStyle(fontSize: 15),
               ),
-              if (changelogs.isNotEmpty) ...[
-                const Divider(),
-                Text(
-                  '$changelogsText:',
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 4),
-              ],
-              if (changelogs.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final text in changelogs) ...[
-                      Text(
-                        '- $text',
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                      const SizedBox(height: 4),
-                    ]
-                  ],
-                ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  MaterialButton(
-                    child: Text(okButtonText),
-                    onPressed: () async {
+              const SizedBox(height: 4),
+            ],
+            if (widget.changelogs.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final text in widget.changelogs) ...[
+                    Text(
+                      '- $text',
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const SizedBox(height: 4),
+                  ]
+                ],
+              ),
+            const SizedBox(height: 20),
+            if (errorText.isNotEmpty)
+              Text(
+                widget.failToOpenStoreError.replaceAll('%error', errorText),
+                style: const TextStyle(fontSize: 13, color: Colors.red),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                MaterialButton(
+                  child: Text(widget.okButtonText),
+                  onPressed: () async {
+                    String packageName = widget.packageInfo.packageName;
+
+                    // For testing
+                    if (UpdateHelper._isDebug &&
+                        UpdateHelper._packageName != '') {
+                      packageName = UpdateHelper._packageName;
+                    }
+
+                    try {
                       if (UniversalPlatform.isAndroid) {
                         try {
-                          _print(
-                              'Android try to launch: market://details?id=${packageInfo.packageName}');
+                          UpdateHelper._print(
+                              'Android try to launch: market://details?id=$packageName');
                           await launchUrlString(
-                            'market://details?id=${packageInfo.packageName}',
+                            'market://details?id=$packageName',
                             mode: LaunchMode.externalApplication,
                           );
                         } catch (_) {
-                          _print(
-                              'Android try to launch: https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
+                          UpdateHelper._print(
+                              'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
                           await launchUrlString(
-                            'https://play.google.com/store/apps/details?id=${packageInfo.packageName}',
+                            'https://play.google.com/store/apps/details?id=$packageName',
                             mode: LaunchMode.externalApplication,
                           );
                         }
@@ -174,11 +304,12 @@ class UpdateHelper {
                       if (UniversalPlatform.isIOS ||
                           UniversalPlatform.isMacOS) {
                         final response = await http.get((Uri.parse(
-                            'http://itunes.apple.com/lookup?bundleId=${packageInfo.packageName}')));
+                            'http://itunes.apple.com/lookup?bundleId=$packageName')));
                         final json = jsonDecode(response.body);
 
-                        _print('iOS get json from bundleId: $json');
-                        _print(
+                        UpdateHelper._print(
+                            'iOS get json from bundleId: $json');
+                        UpdateHelper._print(
                             'iOS get trackId: ${json['results'][0]['trackId']}');
 
                         launchUrlString(
@@ -186,34 +317,36 @@ class UpdateHelper {
                           mode: LaunchMode.externalApplication,
                         );
                       } else {
-                        if (updatePlatformConfig!.storeUrl != null &&
+                        if (widget.updatePlatformConfig.storeUrl != null &&
                             await canLaunchUrlString(
-                                updatePlatformConfig.storeUrl!)) {
-                          _print(
-                              'Other platforms, try to launch: ${updatePlatformConfig.storeUrl}');
+                                widget.updatePlatformConfig.storeUrl!)) {
+                          UpdateHelper._print(
+                              'Other platforms, try to launch: ${widget.updatePlatformConfig.storeUrl}');
                           await launchUrlString(
-                            updatePlatformConfig.storeUrl!,
+                            widget.updatePlatformConfig.storeUrl!,
                             mode: LaunchMode.externalApplication,
                           );
                         }
                       }
-                    },
-                  ),
-                  if (!forceUpdate)
-                    MaterialButton(
-                      child: Text(laterButtonText),
-                      onPressed: () => Navigator.pop(context),
-                    )
-                ],
-              ),
-            ],
-          ),
+                    } catch (e) {
+                      UpdateHelper._print(
+                          'Cannot open the Store automatically!');
+                      setState(() {
+                        errorText = e.toString();
+                      });
+                    }
+                  },
+                ),
+                if (!widget.forceUpdate)
+                  MaterialButton(
+                    child: Text(widget.laterButtonText),
+                    onPressed: () => Navigator.pop(context),
+                  )
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
-
-  static void _print(Object? object) =>
-      // ignore: avoid_print
-      _isDebug ? print('[Update Helper] $object') : null;
 }
