@@ -1,6 +1,6 @@
 name: update_helper
 description: Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
-version: 0.1.0-rc3
+version: 0.1.0-rc4
 homepage: https://github.com/vursin/update_helper
 
 environment:
@@ -10,10 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  package_info_plus: ^3.0.1
+  package_info_plus: ^3.0.2
   universal_platform: ^1.0.0+1
-  url_launcher: ^6.1.5
-  satisfied_version: ^0.1.0
+  url_launcher: ^6.1.7
+  satisfied_version: ^0.1.0+1
   http: ^0.13.5
 
 dev_dependencies:

@@ -1,3 +1,22 @@
+## 0.1.0-rc4
+
+* **[BREAKING CHANGE]** Move from static function to singleton.
+
+  * Before:
+  
+    ``` dart
+    UpdateHelper.initial();
+    ```
+
+  * Now:
+
+    ``` dart
+    final updateHelper = UpdateHelper.instance;
+    updateHelper.initial();
+    ```
+
+* Update README.
+
 ## 0.1.0-rc3
 
 * Add `failToOpenStoreError` parameter to show the error log if the app can't open the store.

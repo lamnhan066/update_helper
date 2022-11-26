@@ -15,8 +15,8 @@ class UpdateHelperForceMock {
     /// Current context.
     required BuildContext context,
   }) {
-    UpdateHelper._packageName = 'com.vursin.othello';
-    return UpdateHelper.initial(
+    UpdateHelper.instance._packageName = 'com.vursin.othello';
+    return UpdateHelper.instance.initial(
       context: context,
       updateConfig: UpdateConfig(
         defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
@@ -37,8 +37,8 @@ class UpdateHelperMock {
     /// Current context.
     required BuildContext context,
   }) {
-    UpdateHelper._packageName = 'com.vursin.othello';
-    return UpdateHelper.initial(
+    UpdateHelper.instance._packageName = 'com.vursin.othello';
+    return UpdateHelper.instance.initial(
       context: context,
       updateConfig: UpdateConfig(
         defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
@@ -55,11 +55,15 @@ class UpdateHelperMock {
 
 // TODO: Make this plugin works on more platforms. It currently depend on in_app_review
 class UpdateHelper {
-  static bool _isDebug = false;
+  static final instance = UpdateHelper._();
 
-  static String _packageName = '';
+  UpdateHelper._();
 
-  static Future<void> initial({
+  bool _isDebug = false;
+
+  String _packageName = '';
+
+  Future<void> initial({
     /// Current context.
     required BuildContext context,
 
@@ -177,7 +181,7 @@ class UpdateHelper {
     );
   }
 
-  static void _print(Object? object) =>
+  void _print(Object? object) =>
       // ignore: avoid_print
       _isDebug ? print('[Update Helper] $object') : null;
 }
@@ -218,6 +222,7 @@ class _StatefulAlert extends StatefulWidget {
 
 class _StatefulAlertState extends State<_StatefulAlert> {
   String errorText = '';
+  final updateHelper = UpdateHelper.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -278,22 +283,22 @@ class _StatefulAlertState extends State<_StatefulAlert> {
                     String packageName = widget.packageInfo.packageName;
 
                     // For testing
-                    if (UpdateHelper._isDebug &&
-                        UpdateHelper._packageName != '') {
-                      packageName = UpdateHelper._packageName;
+                    if (updateHelper._isDebug &&
+                        updateHelper._packageName != '') {
+                      packageName = updateHelper._packageName;
                     }
 
                     try {
                       if (UniversalPlatform.isAndroid) {
                         try {
-                          UpdateHelper._print(
+                          updateHelper._print(
                               'Android try to launch: market://details?id=$packageName');
                           await launchUrlString(
                             'market://details?id=$packageName',
                             mode: LaunchMode.externalApplication,
                           );
                         } catch (_) {
-                          UpdateHelper._print(
+                          updateHelper._print(
                               'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
                           await launchUrlString(
                             'https://play.google.com/store/apps/details?id=$packageName',
@@ -307,9 +312,9 @@ class _StatefulAlertState extends State<_StatefulAlert> {
                             'http://itunes.apple.com/lookup?bundleId=$packageName')));
                         final json = jsonDecode(response.body);
 
-                        UpdateHelper._print(
-                            'iOS get json from bundleId: $json');
-                        UpdateHelper._print(
+                        updateHelper
+                            ._print('iOS get json from bundleId: $json');
+                        updateHelper._print(
                             'iOS get trackId: ${json['results'][0]['trackId']}');
 
                         launchUrlString(
@@ -320,7 +325,7 @@ class _StatefulAlertState extends State<_StatefulAlert> {
                         if (widget.updatePlatformConfig.storeUrl != null &&
                             await canLaunchUrlString(
                                 widget.updatePlatformConfig.storeUrl!)) {
-                          UpdateHelper._print(
+                          updateHelper._print(
                               'Other platforms, try to launch: ${widget.updatePlatformConfig.storeUrl}');
                           await launchUrlString(
                             widget.updatePlatformConfig.storeUrl!,
@@ -329,8 +334,8 @@ class _StatefulAlertState extends State<_StatefulAlert> {
                         }
                       }
                     } catch (e) {
-                      UpdateHelper._print(
-                          'Cannot open the Store automatically!');
+                      updateHelper
+                          ._print('Cannot open the Store automatically!');
                       setState(() {
                         errorText = e.toString();
                       });

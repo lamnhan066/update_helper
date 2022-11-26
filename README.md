@@ -12,7 +12,8 @@ Screenshots (Left/Above: don't force to update, Right/Below: force to update and
 ### Simple Way
 
 ``` dart
-UpdateHelper.initial(
+final updateHelper = UpdateHelper.instance;
+updateHelper.initial(
   context: context,
   updateConfig: UpdateConfig(
     defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
@@ -25,34 +26,33 @@ UpdateHelper.initial(
 
 ``` dart
 final latestVersion = '1.0.0';
-final forceUpdate = false;
 final bannedVersions = ['<=0.9.0']; // <-------
-final currentVersion = '0.9.0';
 
-await UpdateHelper.initial(
+final updateHelper = UpdateHelper.instance;
+
+updateHelper.initial(
     context: context,
     updateConfig: UpdateConfig(
         defaultConfig: UpdatePlatformConfig(latestVersion: latestVersion),
-        android: UpdatePlatformConfig(latestVersion: latestVersion)
     ),
     title: 'Cập Nhật',
     content: 'Đã có phiên bản cập nhật mới!\n\n'
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'
         'Bạn có muốn cập nhật không?',
-    forceUpdate: forceUpdate,
     bannedVersions: bannedVersions, // <--------
     forceUpdateContent: 'Đã có phiên bản cập nhật mới!\n\n'
         'Phiên bản hiện tại: %currentVersion\n'
         'Phiên bản mới: %latestVersion\n\n'
         'Bạn cần cập nhật để tiếp tục sử dụng',
+    changelogsText: 'Thay đổi',
     changelogs: [
-        'Bugs fix and improve performances',
-        'New feature: Add update dialog',
+        'Cải thiện hiệu năng', 
+        'Sửa một số lỗi',
     ],
-    failToOpenStoreError: 'Got an error when trying to open the Store, '
-        'please update the app manually. '
-        '\nSorry for the inconvenience.\n(Logs: %error)',
+    failToOpenStoreError: 'Đã xảy ra lỗi khi mở Store để cập nhật ứng dung, '
+        'bạn vui lòng cập nhật thủ công nhé!'
+        '\nXin lỗi vì sự bất tiện này.\n(Logs: %error)',
 );
 ```
 
@@ -61,4 +61,5 @@ await UpdateHelper.initial(
 - The plugin will replace `%currentVersion` and `%latestVersion` with it's real version.
 - You can use only `forceUpdate` or `bannedVersions` because `forceUpdate` will be `true` if the current version is satisfied with `bannedVersions`.
 - You can read more about how to use `bannedVersions` on [satisfied_version](https://pub.dev/packages/satisfied_version) plugin.
+- `changelogsText` is the changelogs text, default is 'Changelogs'. `changelogs` is a list of change log that you want to show in the new version, default is empty. The `changelogsText` and `changelogs` only show up when `changelogs` is not empty.
 - Show an error log when the app can't open the store, you can modify it using the `failToOpenStoreError` parameter. The plugin will replace the `%error` with it's real error log.
