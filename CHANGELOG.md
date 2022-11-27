@@ -1,3 +1,7 @@
+## 0.1.0
+
+* Release to stable.
+
 ## 0.1.0-rc4
 
 * **[BREAKING CHANGE]** Move from static function to singleton.
