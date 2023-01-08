@@ -9,51 +9,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 part 'utils.dart';
 
-@visibleForTesting
-class UpdateHelperForceMock {
-  static initial({
-    /// Current context.
-    required BuildContext context,
-  }) {
-    UpdateHelper.instance._packageName = 'com.vursin.othello';
-    return UpdateHelper.instance.initial(
-      context: context,
-      updateConfig: UpdateConfig(
-        defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
-      ),
-      forceUpdate: true,
-      changelogs: [
-        'Bugs fix and improve performances',
-        'New feature: Add update dialog',
-      ],
-      isDebug: true,
-    );
-  }
-}
-
-@visibleForTesting
-class UpdateHelperMock {
-  static initial({
-    /// Current context.
-    required BuildContext context,
-  }) {
-    UpdateHelper.instance._packageName = 'com.vursin.othello';
-    return UpdateHelper.instance.initial(
-      context: context,
-      updateConfig: UpdateConfig(
-        defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
-      ),
-      forceUpdate: false,
-      changelogs: [
-        'Bugs fix and improve performances',
-        'New feature: Add update dialog',
-      ],
-      isDebug: true,
-    );
-  }
-}
-
-// TODO: Make this plugin works on more platforms. It currently depend on in_app_review
 class UpdateHelper {
   static final instance = UpdateHelper._();
 
@@ -61,7 +16,8 @@ class UpdateHelper {
 
   bool _isDebug = false;
 
-  String _packageName = '';
+  @visibleForTesting
+  String packageName = '';
 
   Future<void> initial({
     /// Current context.
@@ -77,6 +33,10 @@ class UpdateHelper {
     ///
     /// Ex: ["<=1.0.0"] means the app have to update if current version <= 1.0.0
     List<String> bannedVersions = const [],
+
+    /// Only show the update dialog when the current version is banned or
+    /// [forceUpdate] is `true`.
+    bool onlyShowDialogWhenBanned = false,
 
     /// Title of the dialog.
     String title = 'Update',
@@ -162,23 +122,26 @@ class UpdateHelper {
       forceUpdate = true;
     }
 
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => _StatefulAlert(
-          forceUpdate: forceUpdate,
-          title: title,
-          content: content,
-          forceUpdateContent: forceUpdateContent,
-          changelogs: changelogs,
-          changelogsText: changelogsText,
-          okButtonText: okButtonText,
-          laterButtonText: laterButtonText,
-          updatePlatformConfig: updatePlatformConfig!,
-          currentVersion: currentVersion,
-          packageInfo: packageInfo,
-          failToOpenStoreError: failToOpenStoreError),
-    );
+    if (!onlyShowDialogWhenBanned ||
+        (onlyShowDialogWhenBanned && forceUpdate)) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => _StatefulAlert(
+            forceUpdate: forceUpdate,
+            title: title,
+            content: content,
+            forceUpdateContent: forceUpdateContent,
+            changelogs: changelogs,
+            changelogsText: changelogsText,
+            okButtonText: okButtonText,
+            laterButtonText: laterButtonText,
+            updatePlatformConfig: updatePlatformConfig!,
+            currentVersion: currentVersion,
+            packageInfo: packageInfo,
+            failToOpenStoreError: failToOpenStoreError),
+      );
+    }
   }
 
   void _print(Object? object) =>
@@ -284,8 +247,8 @@ class _StatefulAlertState extends State<_StatefulAlert> {
 
                     // For testing
                     if (updateHelper._isDebug &&
-                        updateHelper._packageName != '') {
-                      packageName = updateHelper._packageName;
+                        updateHelper.packageName != '') {
+                      packageName = updateHelper.packageName;
                     }
 
                     try {

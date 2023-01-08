@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Added `onlyShowDialogWhenBanned` parameter: only show the update dialog when the current version is banned or `forceUpdate` is `true`.
+
 ## 0.1.0
 
 * Release to stable.
