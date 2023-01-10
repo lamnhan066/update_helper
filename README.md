@@ -57,6 +57,13 @@ updateHelper.initial(
 );
 ```
 
+**Additional**
+
+``` dart
+/// Use this method to open the store
+UpdateHelper.openStore();
+```
+
 **NOTE:**
 
 - The plugin will replace `%currentVersion` and `%latestVersion` with it's real version.

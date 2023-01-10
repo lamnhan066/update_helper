@@ -1,24 +1,26 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:satisfied_version/satisfied_version.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:update_helper/src/utils/open_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-part 'utils.dart';
+part 'models/stateful_alert.dart';
+part 'models/update_platform_config.dart';
 
 class UpdateHelper {
+  /// Create instance for UpdateHelper
   static final instance = UpdateHelper._();
 
   UpdateHelper._();
 
   bool _isDebug = false;
 
+  /// This is internal variable. Only use for testing.
   @visibleForTesting
   String packageName = '';
 
+  /// Intitalize the package.
   Future<void> initial({
     /// Current context.
     required BuildContext context,
@@ -146,175 +148,30 @@ class UpdateHelper {
 
   void _print(Object? object) =>
       // ignore: avoid_print
-      _isDebug ? print('[Update Helper] $object') : null;
-}
+      _isDebug ? debugPrint('[Update Helper] $object') : null;
 
-class _StatefulAlert extends StatefulWidget {
-  const _StatefulAlert({
-    Key? key,
-    required this.forceUpdate,
-    required this.title,
-    required this.content,
-    required this.forceUpdateContent,
-    required this.changelogs,
-    required this.changelogsText,
-    required this.okButtonText,
-    required this.laterButtonText,
-    required this.updatePlatformConfig,
-    required this.currentVersion,
-    required this.packageInfo,
-    required this.failToOpenStoreError,
-  }) : super(key: key);
+  /// Open the store
+  static Future<void> openStore({
+    /// Use this Url if any error occurs
+    String? fallbackUrl,
 
-  final bool forceUpdate;
-  final String title;
-  final String content;
-  final String forceUpdateContent;
-  final List<String> changelogs;
-  final String changelogsText;
-  final String okButtonText;
-  final String laterButtonText;
-  final UpdatePlatformConfig updatePlatformConfig;
-  final String currentVersion;
-  final PackageInfo packageInfo;
-  final String failToOpenStoreError;
+    /// Print debug log
+    bool debugLog = false,
+  }) async {
+    final packageInfo = await PackageInfo.fromPlatform();
 
-  @override
-  State<_StatefulAlert> createState() => _StatefulAlertState();
-}
-
-class _StatefulAlertState extends State<_StatefulAlert> {
-  String errorText = '';
-  final updateHelper = UpdateHelper.instance;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
-      content: WillPopScope(
-        onWillPop: () async => widget.forceUpdate ? false : true,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              widget.title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const Divider(),
-            Text(
-              (widget.forceUpdate ? widget.forceUpdateContent : widget.content)
-                  .replaceAll('%currentVersion', widget.currentVersion)
-                  .replaceAll('%latestVersion',
-                      widget.updatePlatformConfig.latestVersion!),
-              style: const TextStyle(fontSize: 15),
-            ),
-            if (widget.changelogs.isNotEmpty) ...[
-              const Divider(),
-              Text(
-                '${widget.changelogsText}:',
-                style: const TextStyle(fontSize: 15),
-              ),
-              const SizedBox(height: 4),
-            ],
-            if (widget.changelogs.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final text in widget.changelogs) ...[
-                    Text(
-                      '- $text',
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                    const SizedBox(height: 4),
-                  ]
-                ],
-              ),
-            const SizedBox(height: 20),
-            if (errorText.isNotEmpty)
-              Text(
-                widget.failToOpenStoreError.replaceAll('%error', errorText),
-                style: const TextStyle(fontSize: 13, color: Colors.red),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                MaterialButton(
-                  child: Text(widget.okButtonText),
-                  onPressed: () async {
-                    String packageName = widget.packageInfo.packageName;
-
-                    // For testing
-                    if (updateHelper._isDebug &&
-                        updateHelper.packageName != '') {
-                      packageName = updateHelper.packageName;
-                    }
-
-                    try {
-                      if (UniversalPlatform.isAndroid) {
-                        try {
-                          updateHelper._print(
-                              'Android try to launch: market://details?id=$packageName');
-                          await launchUrlString(
-                            'market://details?id=$packageName',
-                            mode: LaunchMode.externalApplication,
-                          );
-                        } catch (_) {
-                          updateHelper._print(
-                              'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
-                          await launchUrlString(
-                            'https://play.google.com/store/apps/details?id=$packageName',
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                      }
-                      if (UniversalPlatform.isIOS ||
-                          UniversalPlatform.isMacOS) {
-                        final response = await http.get((Uri.parse(
-                            'http://itunes.apple.com/lookup?bundleId=$packageName')));
-                        final json = jsonDecode(response.body);
-
-                        updateHelper
-                            ._print('iOS get json from bundleId: $json');
-                        updateHelper._print(
-                            'iOS get trackId: ${json['results'][0]['trackId']}');
-
-                        launchUrlString(
-                          'https://apps.apple.com/app/id${json['results'][0]['trackId']}',
-                          mode: LaunchMode.externalApplication,
-                        );
-                      } else {
-                        if (widget.updatePlatformConfig.storeUrl != null &&
-                            await canLaunchUrlString(
-                                widget.updatePlatformConfig.storeUrl!)) {
-                          updateHelper._print(
-                              'Other platforms, try to launch: ${widget.updatePlatformConfig.storeUrl}');
-                          await launchUrlString(
-                            widget.updatePlatformConfig.storeUrl!,
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      updateHelper
-                          ._print('Cannot open the Store automatically!');
-                      setState(() {
-                        errorText = e.toString();
-                      });
-                    }
-                  },
-                ),
-                if (!widget.forceUpdate)
-                  MaterialButton(
-                    child: Text(widget.laterButtonText),
-                    onPressed: () => Navigator.pop(context),
-                  )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    try {
+      await openStoreImpl(
+        packageInfo.packageName,
+        fallbackUrl,
+        (progress) {
+          if (debugLog) debugPrint('[UpdateHelper.openStore] $progress');
+        },
+      );
+    } catch (_) {
+      if (fallbackUrl != null && await canLaunchUrlString(fallbackUrl)) {
+        await launchUrlString(fallbackUrl);
+      }
+    }
   }
 }

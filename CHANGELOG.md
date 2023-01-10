@@ -1,3 +1,8 @@
+## 0.1.2
+
+* Refactored internal code
+* Added `UpdateHelper.openStore()` method to open the store.
+
 ## 0.1.1
 
 * Added `onlyShowDialogWhenBanned` parameter: only show the update dialog when the current version is banned or `forceUpdate` is `true`.

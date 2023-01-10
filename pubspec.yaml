@@ -1,6 +1,6 @@
 name: update_helper
 description: Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/vursin/update_helper
 
 environment:

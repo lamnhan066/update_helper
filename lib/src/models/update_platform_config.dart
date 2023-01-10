@@ -1,4 +1,4 @@
-part of 'update_helper.dart';
+part of '../update_helper.dart';
 
 class UpdatePlatformConfig {
   /// This value does not need for Android and iOS.
