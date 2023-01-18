@@ -16,6 +16,15 @@ class UpdateHelper {
 
   bool _isDebug = false;
 
+  /// Is update available. This value is useful when you set the [onlyShowDialogWhenBanned]
+  /// to `true`.
+  bool get isAvailable => _isAvailable;
+  bool _isAvailable = false;
+
+  /// Is force update ([forceUpdate] is `true` or the current version is banned)
+  bool get isForceUpdate => _isForceUpdate;
+  bool _isForceUpdate = false;
+
   /// This is internal variable. Only use for testing.
   @visibleForTesting
   String packageName = '';
@@ -119,9 +128,17 @@ class UpdateHelper {
       return;
     }
 
+    // Update available
+    _isAvailable = true;
+
     if (!forceUpdate && SatisfiedVersion.list(currentVersion, bannedVersions)) {
       _print('Current version have to force to update');
       forceUpdate = true;
+    }
+
+    // Current version needs to force update
+    if (forceUpdate) {
+      _isForceUpdate = true;
     }
 
     if (!onlyShowDialogWhenBanned ||

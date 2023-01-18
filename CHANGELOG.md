@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Added `isAvailable` and `isForceUpdate` variables
+
 ## 0.1.2
 
 * Refactored internal code

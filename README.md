@@ -57,14 +57,18 @@ updateHelper.initial(
 );
 ```
 
-**Additional**
+When you're setting `onlyShowDialogWhenBanned` to `true`, you can check the current version has update or not by using `updateHelper.isAvailable` variable, it will be `true` if the new version is available. You have to use this value after calling `initial`.
+
+You can also check the current version needs to force update or not by using `updateHelper.isForceUpdate`. If this value is `true`, it means the `forceUpdate` variable is `true` or the current version is is `bannedVersions`.
+
+## **Additional**
 
 ``` dart
 /// Use this method to open the store
 UpdateHelper.openStore();
 ```
 
-**NOTE:**
+## **NOTE:**
 
 - The plugin will replace `%currentVersion` and `%latestVersion` with it's real version.
 - You can use only `forceUpdate` or `bannedVersions` because `forceUpdate` will be `true` if the current version is satisfied with `bannedVersions`.
