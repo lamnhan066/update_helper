@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Support reloading website when updating on Web platform.
+
 ## 0.1.3
 
 * Added `isAvailable` and `isForceUpdate` variables

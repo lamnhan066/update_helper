@@ -143,6 +143,7 @@ class UpdateHelper {
 
     if (!onlyShowDialogWhenBanned ||
         (onlyShowDialogWhenBanned && forceUpdate)) {
+      // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
         barrierDismissible: false,
