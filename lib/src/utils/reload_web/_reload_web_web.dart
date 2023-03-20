@@ -2,6 +2,7 @@
 
 import 'dart:html' as html;
 
+/// Reload website
 void reloadWebImpl() {
   html.window.location.reload();
 }
