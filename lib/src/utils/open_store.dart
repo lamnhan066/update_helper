@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:universal_platform/universal_platform.dart';
+import 'package:update_helper/src/utils/reload_web/reload_web.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> openStoreImpl(
@@ -30,7 +31,10 @@ Future<void> openStoreImpl(
           mode: LaunchMode.externalApplication,
         );
       }
+
+      return;
     }
+
     if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
       final response = await http.get(
           (Uri.parse('http://itunes.apple.com/lookup?bundleId=$packageName')));
@@ -39,18 +43,26 @@ Future<void> openStoreImpl(
       onPrint('iOS get json from bundleId: $json');
       onPrint('iOS get trackId: ${json['results'][0]['trackId']}');
 
-      launchUrlString(
+      await launchUrlString(
         'https://apps.apple.com/app/id${json['results'][0]['trackId']}',
         mode: LaunchMode.externalApplication,
       );
-    } else {
-      if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
-        onPrint('Other platforms, try to launch: $storeUrl');
-        await launchUrlString(
-          storeUrl,
-          mode: LaunchMode.externalApplication,
-        );
-      }
+
+      return;
+    }
+
+    if (UniversalPlatform.isWeb) {
+      reloadWeb();
+
+      return;
+    }
+
+    if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
+      onPrint('Other platforms, try to launch: $storeUrl');
+      await launchUrlString(
+        storeUrl,
+        mode: LaunchMode.externalApplication,
+      );
     }
   } catch (e) {
     onPrint('Cannot open the Store automatically!');
