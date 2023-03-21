@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       await UpdateHelper.instance.initial(
         context: context,
         updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
+          defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
         ),
         isDebug: true,
       );
@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
       await UpdateHelper.instance.initial(
         context: context,
         updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
+          defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
         ),
         onlyShowDialogWhenBanned: true,
         isDebug: true,
@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       await UpdateHelper.instance.initial(
         context: context,
         updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '3.0.0'),
+          defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
         ),
         onlyShowDialogWhenBanned: true,
         forceUpdate: true,
