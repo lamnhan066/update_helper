@@ -8,13 +8,11 @@ import 'package:url_launcher/url_launcher_string.dart';
 part 'models/stateful_alert.dart';
 part 'models/update_platform_config.dart';
 
-class UpdateHelper {
+class UpdateHelper extends WidgetsBindingObserver {
   /// Create instance for UpdateHelper
   static final instance = UpdateHelper._();
 
   UpdateHelper._();
-
-  bool _isDebug = false;
 
   /// Is update available. This value is useful when you set the [onlyShowDialogWhenBanned]
   /// to `true`.
@@ -29,13 +27,35 @@ class UpdateHelper {
   @visibleForTesting
   String packageName = '';
 
+  // If the [_context] is non-null => others will also non-null.
+  BuildContext? _context;
+  late final UpdateConfig _updateConfig;
+  late final bool _checkWhenResume;
+  late final bool _forceUpdate;
+  late final List<String> _bannedVersions;
+  late final bool _onlyShowDialogWhenBanned;
+  late final String _title;
+  late final String _content;
+  late final String _okButtonText;
+  late final String _laterButtonText;
+  late final String _forceUpdateContent;
+  late final List<String> _changelogs;
+  late final String _changelogsText;
+  late final String _failToOpenStoreError;
+  late final bool _isDebug;
+
   /// Intitalize the package.
+  ///
+  /// This
   Future<void> initial({
     /// Current context.
     required BuildContext context,
 
     /// Configuration for each platform.
     required UpdateConfig updateConfig,
+
+    /// Re-check for update when the app is resumed.
+    bool checkWhenResume = true,
 
     /// Force update on this version. The user can't close this dialog until it's updated.
     bool forceUpdate = false,
@@ -93,24 +113,44 @@ class UpdateHelper {
     /// Print debuglog.
     bool isDebug = false,
   }) async {
+    _context = context;
+    _updateConfig = updateConfig;
+    _checkWhenResume = checkWhenResume;
+    _forceUpdate = forceUpdate;
+    _bannedVersions = bannedVersions;
+    _onlyShowDialogWhenBanned = onlyShowDialogWhenBanned;
+    _title = title;
+    _content = content;
+    _okButtonText = okButtonText;
+    _laterButtonText = laterButtonText;
+    _forceUpdateContent = forceUpdateContent;
+    _changelogs = changelogs;
+    _changelogsText = changelogsText;
+    _failToOpenStoreError = failToOpenStoreError;
     _isDebug = isDebug;
 
+    WidgetsBinding.instance.addObserver(this);
+
+    await _initial();
+  }
+
+  Future<void> _initial() async {
     UpdatePlatformConfig? updatePlatformConfig;
     if (UniversalPlatform.isAndroid) {
-      updatePlatformConfig = updateConfig.android;
+      updatePlatformConfig = _updateConfig.android;
     } else if (UniversalPlatform.isIOS) {
-      updatePlatformConfig = updateConfig.ios;
+      updatePlatformConfig = _updateConfig.ios;
     } else if (UniversalPlatform.isWeb) {
-      updatePlatformConfig = updateConfig.web;
+      updatePlatformConfig = _updateConfig.web;
     } else if (UniversalPlatform.isWindows) {
-      updatePlatformConfig = updateConfig.windows;
+      updatePlatformConfig = _updateConfig.windows;
     } else if (UniversalPlatform.isLinux) {
-      updatePlatformConfig = updateConfig.linux;
+      updatePlatformConfig = _updateConfig.linux;
     } else if (UniversalPlatform.isMacOS) {
-      updatePlatformConfig = updateConfig.macos;
+      updatePlatformConfig = _updateConfig.macos;
     }
 
-    updatePlatformConfig ??= updateConfig.defaultConfig;
+    updatePlatformConfig ??= _updateConfig.defaultConfig;
 
     if (updatePlatformConfig == null ||
         updatePlatformConfig.latestVersion == null) {
@@ -131,37 +171,58 @@ class UpdateHelper {
     // Update available
     _isAvailable = true;
 
-    if (!forceUpdate && SatisfiedVersion.list(currentVersion, bannedVersions)) {
+    if (!_forceUpdate &&
+        SatisfiedVersion.list(currentVersion, _bannedVersions)) {
       _print('Current version have to force to update');
-      forceUpdate = true;
+      _forceUpdate = true;
     }
 
     // Current version needs to force update
-    if (forceUpdate) {
+    if (_forceUpdate) {
       _isForceUpdate = true;
     }
 
-    if (!onlyShowDialogWhenBanned ||
-        (onlyShowDialogWhenBanned && forceUpdate)) {
+    if (!_onlyShowDialogWhenBanned ||
+        (_onlyShowDialogWhenBanned && _forceUpdate)) {
       // ignore: use_build_context_synchronously
       await showDialog(
-        context: context,
+        context: _context!,
         barrierDismissible: false,
         builder: (BuildContext context) => _StatefulAlert(
-            forceUpdate: forceUpdate,
-            title: title,
-            content: content,
-            forceUpdateContent: forceUpdateContent,
-            changelogs: changelogs,
-            changelogsText: changelogsText,
-            okButtonText: okButtonText,
-            laterButtonText: laterButtonText,
+            forceUpdate: _forceUpdate,
+            title: _title,
+            content: _content,
+            forceUpdateContent: _forceUpdateContent,
+            changelogs: _changelogs,
+            changelogsText: _changelogsText,
+            okButtonText: _okButtonText,
+            laterButtonText: _laterButtonText,
             updatePlatformConfig: updatePlatformConfig!,
             currentVersion: currentVersion,
             packageInfo: packageInfo,
-            failToOpenStoreError: failToOpenStoreError),
+            failToOpenStoreError: _failToOpenStoreError),
       );
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (_context != null && _checkWhenResume) {
+          _initial();
+        }
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   void _print(Object? object) =>
