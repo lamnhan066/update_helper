@@ -1,3 +1,10 @@
+## 0.2.0
+
+* Update dependencies.
+* Update dart sdk to `>=2.18.0 <4.0.0`.
+* Update flutter min sdk to `3.3.0`.
+* Update homepage URL.
+
 ## 0.1.4
 
 * Support reloading website when updating on Web platform.
