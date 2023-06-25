@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Bump http version to `1.0.0`.
+
 ## 0.2.0
 
 * Update dependencies.
