@@ -1,6 +1,6 @@
 name: update_helper
 description: Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
-version: 0.3.0
+version: 0.4.0
 homepage: https://github.com/vnniz/update_helper
 
 environment:
@@ -12,14 +12,14 @@ dependencies:
     sdk: flutter
   package_info_plus: ^4.0.2
   universal_platform: ^1.0.0+1
-  url_launcher: ^6.1.10
-  satisfied_version: ^0.1.0+1
-  http: ^1.0.0
+  url_launcher: ^6.1.12
+  satisfied_version: ^0.2.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
