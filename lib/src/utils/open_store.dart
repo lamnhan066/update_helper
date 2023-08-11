@@ -24,29 +24,55 @@ Future<void> openStoreImpl(
           mode: LaunchMode.externalApplication,
         );
       } catch (_) {
-        onPrint(
-            'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
-        await launchUrlString(
-          'https://play.google.com/store/apps/details?id=$packageName',
-          mode: LaunchMode.externalApplication,
-        );
+        try {
+          onPrint(
+              'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
+          await launchUrlString(
+            'https://play.google.com/store/apps/details?id=$packageName',
+            mode: LaunchMode.externalApplication,
+          );
+        } catch (e) {
+          onPrint(
+              'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl');
+          if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
+            await launchUrlString(
+              storeUrl,
+              mode: LaunchMode.externalApplication,
+            );
+          } else {
+            rethrow;
+          }
+        }
       }
 
       return;
     }
 
     if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
-      final response = await http.get(
-          (Uri.parse('http://itunes.apple.com/lookup?bundleId=$packageName')));
-      final json = jsonDecode(response.body);
+      try {
+        final response = await http.get((Uri.parse(
+            'http://itunes.apple.com/lookup?bundleId=$packageName')));
+        final json = jsonDecode(response.body);
 
-      onPrint('iOS get json from bundleId: $json');
-      onPrint('iOS get trackId: ${json['results'][0]['trackId']}');
+        onPrint('iOS or MacOS get json from bundleId: $json');
+        onPrint('iOS or MacOS get trackId: ${json['results'][0]['trackId']}');
 
-      await launchUrlString(
-        'https://apps.apple.com/app/id${json['results'][0]['trackId']}',
-        mode: LaunchMode.externalApplication,
-      );
+        await launchUrlString(
+          'https://apps.apple.com/app/id${json['results'][0]['trackId']}',
+          mode: LaunchMode.externalApplication,
+        );
+      } catch (e) {
+        onPrint(
+            'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl');
+        if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
+          await launchUrlString(
+            storeUrl,
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          rethrow;
+        }
+      }
 
       return;
     }

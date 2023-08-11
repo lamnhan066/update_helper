@@ -1,3 +1,9 @@
+## 0.4.1
+
+* Add Fuchsia platform.
+* Improve fallback URL behavior.
+* Improve dialog UI.
+
 ## 0.4.0
 
 * Bump dependencies.

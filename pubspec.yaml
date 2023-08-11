@@ -1,6 +1,6 @@
 name: update_helper
 description: Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/vnniz/update_helper
 
 environment:
@@ -15,6 +15,7 @@ dependencies:
   url_launcher: ^6.1.12
   satisfied_version: ^0.2.0
   http: ^1.1.0
+  boxw: ^0.0.6
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:boxw/boxw.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:satisfied_version/satisfied_version.dart';
@@ -95,25 +96,25 @@ class UpdateHelper {
   }) async {
     _isDebug = isDebug;
 
-    UpdatePlatformConfig? updatePlatformConfig;
+    UpdatePlatformConfig config =
+        updateConfig.defaultConfig ?? UpdatePlatformConfig();
     if (UniversalPlatform.isAndroid) {
-      updatePlatformConfig = updateConfig.android;
-    } else if (UniversalPlatform.isIOS) {
-      updatePlatformConfig = updateConfig.ios;
-    } else if (UniversalPlatform.isWeb) {
-      updatePlatformConfig = updateConfig.web;
-    } else if (UniversalPlatform.isWindows) {
-      updatePlatformConfig = updateConfig.windows;
-    } else if (UniversalPlatform.isLinux) {
-      updatePlatformConfig = updateConfig.linux;
+      config = config.copyWith(updateConfig.android);
     } else if (UniversalPlatform.isMacOS) {
-      updatePlatformConfig = updateConfig.macos;
+      config = config.copyWith(updateConfig.macos);
+    } else if (UniversalPlatform.isIOS) {
+      config = config.copyWith(updateConfig.ios);
+    } else if (UniversalPlatform.isWeb) {
+      config = config.copyWith(updateConfig.web);
+    } else if (UniversalPlatform.isWindows) {
+      config = config.copyWith(updateConfig.windows);
+    } else if (UniversalPlatform.isLinux) {
+      config = config.copyWith(updateConfig.linux);
+    } else if (UniversalPlatform.isFuchsia) {
+      config = config.copyWith(updateConfig.fuchsia);
     }
 
-    updatePlatformConfig ??= updateConfig.defaultConfig;
-
-    if (updatePlatformConfig == null ||
-        updatePlatformConfig.latestVersion == null) {
+    if (config.latestVersion == null) {
       _print('Config from this platform is null');
       return;
     }
@@ -123,7 +124,7 @@ class UpdateHelper {
     final currentVersion = packageInfo.version;
     _print('current version: $currentVersion');
 
-    if (updatePlatformConfig.latestVersion!.compareTo(currentVersion) <= 0) {
+    if (config.latestVersion!.compareTo(currentVersion) <= 0) {
       _print('Current version is up to date');
       return;
     }
@@ -156,7 +157,7 @@ class UpdateHelper {
             changelogsText: changelogsText,
             okButtonText: okButtonText,
             laterButtonText: laterButtonText,
-            updatePlatformConfig: updatePlatformConfig!,
+            updatePlatformConfig: config,
             currentVersion: currentVersion,
             packageInfo: packageInfo,
             failToOpenStoreError: failToOpenStoreError),
@@ -170,17 +171,18 @@ class UpdateHelper {
 
   /// Open the store
   static Future<void> openStore({
+    String? packageName,
+
     /// Use this Url if any error occurs
     String? fallbackUrl,
 
     /// Print debug log
     bool debugLog = false,
   }) async {
-    final packageInfo = await PackageInfo.fromPlatform();
-
     try {
+      packageName ??= (await PackageInfo.fromPlatform()).packageName;
       await openStoreImpl(
-        packageInfo.packageName,
+        packageName,
         fallbackUrl,
         (progress) {
           if (debugLog) debugPrint('[UpdateHelper.openStore] $progress');

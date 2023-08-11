@@ -10,6 +10,15 @@ class UpdatePlatformConfig {
   final String? latestVersion;
 
   UpdatePlatformConfig({this.storeUrl, this.latestVersion});
+
+  UpdatePlatformConfig copyWith(UpdatePlatformConfig? config) {
+    if (config == null) return this;
+
+    return UpdatePlatformConfig(
+      storeUrl: config.storeUrl ?? storeUrl,
+      latestVersion: config.latestVersion ?? latestVersion,
+    );
+  }
 }
 
 /// Update configuration for each platform
@@ -35,6 +44,8 @@ class UpdateConfig {
   /// Update configuration for macos
   final UpdatePlatformConfig? macos;
 
+  final UpdatePlatformConfig? fuchsia;
+
   UpdateConfig({
     this.defaultConfig,
     this.android,
@@ -43,5 +54,6 @@ class UpdateConfig {
     this.windows,
     this.linux,
     this.macos,
+    this.fuchsia,
   });
 }

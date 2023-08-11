@@ -40,93 +40,113 @@ class _StatefulAlertState extends State<_StatefulAlert> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
-      content: WillPopScope(
-        onWillPop: () async => widget.forceUpdate ? false : true,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              widget.title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+    return BoxWDialog(
+      title: widget.title,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            (widget.forceUpdate ? widget.forceUpdateContent : widget.content)
+                .replaceAll('%currentVersion', widget.currentVersion)
+                .replaceAll('%latestVersion',
+                    widget.updatePlatformConfig.latestVersion!),
+            style: const TextStyle(fontSize: 15),
+          ),
+          if (widget.changelogs.isNotEmpty) ...[
             const Divider(),
             Text(
-              (widget.forceUpdate ? widget.forceUpdateContent : widget.content)
-                  .replaceAll('%currentVersion', widget.currentVersion)
-                  .replaceAll('%latestVersion',
-                      widget.updatePlatformConfig.latestVersion!),
+              '${widget.changelogsText}:',
               style: const TextStyle(fontSize: 15),
             ),
-            if (widget.changelogs.isNotEmpty) ...[
-              const Divider(),
-              Text(
-                '${widget.changelogsText}:',
-                style: const TextStyle(fontSize: 15),
-              ),
-              const SizedBox(height: 4),
-            ],
-            if (widget.changelogs.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final text in widget.changelogs) ...[
-                    Text(
-                      '- $text',
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                    const SizedBox(height: 4),
-                  ]
-                ],
-              ),
-            const SizedBox(height: 20),
-            if (errorText.isNotEmpty)
-              Text(
-                widget.failToOpenStoreError.replaceAll('%error', errorText),
-                style: const TextStyle(fontSize: 13, color: Colors.red),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                MaterialButton(
-                  child: Text(widget.okButtonText),
-                  onPressed: () async {
-                    String packageName = widget.packageInfo.packageName;
-
-                    // For testing
-                    if (updateHelper._isDebug &&
-                        updateHelper.packageName != '') {
-                      packageName = updateHelper.packageName;
-                    }
-
-                    try {
-                      await openStoreImpl(
-                        packageName,
-                        widget.updatePlatformConfig.storeUrl,
-                        (debugLog) {
-                          updateHelper._print(debugLog);
-                        },
-                      );
-                    } catch (e) {
-                      setState(() {
-                        errorText = e.toString();
-                      });
-                    }
-                  },
-                ),
-                if (!widget.forceUpdate)
-                  MaterialButton(
-                    child: Text(widget.laterButtonText),
-                    onPressed: () => Navigator.pop(context),
-                  )
+            const SizedBox(height: 4),
+          ],
+          if (widget.changelogs.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final text in widget.changelogs) ...[
+                  Text(
+                    '- $text',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(height: 4),
+                ]
               ],
             ),
+          const SizedBox(height: 20),
+          if (errorText.isNotEmpty)
+            Text(
+              widget.failToOpenStoreError.replaceAll('%error', errorText),
+              style: const TextStyle(fontSize: 13, color: Colors.red),
+            ),
+          if (widget.changelogs.isNotEmpty) ...[
+            const Divider(),
+            Text(
+              '${widget.changelogsText}:',
+              style: const TextStyle(fontSize: 15),
+            ),
+            const SizedBox(height: 4),
+          ],
+          if (widget.changelogs.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final text in widget.changelogs) ...[
+                  Text(
+                    '- $text',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(height: 4),
+                ]
+              ],
+            ),
+          // const SizedBox(height: 20),
+          if (errorText.isNotEmpty)
+            Text(
+              widget.failToOpenStoreError.replaceAll('%error', errorText),
+              style: const TextStyle(fontSize: 13, color: Colors.red),
+            ),
+        ],
+      ),
+      buttons: [
+        Buttons(
+          axis: Axis.horizontal,
+          buttons: [
+            BoxWButton(
+              width: 100,
+              child: Text(widget.okButtonText),
+              onPressed: () async {
+                String packageName = widget.packageInfo.packageName;
+
+                // For testing
+                if (updateHelper._isDebug && updateHelper.packageName != '') {
+                  packageName = updateHelper.packageName;
+                }
+
+                try {
+                  await openStoreImpl(
+                    packageName,
+                    widget.updatePlatformConfig.storeUrl,
+                    (debugLog) {
+                      updateHelper._print(debugLog);
+                    },
+                  );
+                } catch (e) {
+                  setState(() {
+                    errorText = e.toString();
+                  });
+                }
+              },
+            ),
+            if (!widget.forceUpdate)
+              BoxWOutlinedButton(
+                width: 100,
+                child: Text(widget.laterButtonText),
+                onPressed: () => Navigator.pop(context),
+              )
           ],
         ),
-      ),
+      ],
     );
   }
 }

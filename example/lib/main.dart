@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_visible_for_testing_member
+// ignore_for_file: invalid_use_of_visible_for_testing_member, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:update_helper/update_helper.dart';
@@ -36,26 +36,30 @@ class _MyAppState extends State<MyApp> {
 
       print('Don\'t show dialog because [onlyShowDialogWhenForce] is `true`'
           'but [forceUpdate] is `false`');
-      await UpdateHelper.instance.initial(
-        context: context,
-        updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
-        ),
-        onlyShowDialogWhenBanned: true,
-        isDebug: true,
-      );
+      if (mounted) {
+        await UpdateHelper.instance.initial(
+          context: context,
+          updateConfig: UpdateConfig(
+            defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
+          ),
+          onlyShowDialogWhenBanned: true,
+          isDebug: true,
+        );
+      }
 
       print('Show dialog because [onlyShowDialogWhenForce] is `true`'
           'and [forceUpdate] is `true`');
-      await UpdateHelper.instance.initial(
-        context: context,
-        updateConfig: UpdateConfig(
-          defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
-        ),
-        onlyShowDialogWhenBanned: true,
-        forceUpdate: true,
-        isDebug: true,
-      );
+      if (mounted) {
+        await UpdateHelper.instance.initial(
+          context: context,
+          updateConfig: UpdateConfig(
+            defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
+          ),
+          onlyShowDialogWhenBanned: true,
+          forceUpdate: true,
+          isDebug: true,
+        );
+      }
     });
   }
 
