@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Bump dependencies.
+
 ## 0.4.1
 
 * Add Fuchsia platform.
