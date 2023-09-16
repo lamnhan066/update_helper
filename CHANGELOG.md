@@ -1,9 +1,14 @@
+## 0.5.2
+
+* Improve CHANGELOG.
+
 ## 0.5.1
 
 * Support version with format "major.minor.patch" better.
 
 ## 0.5.0
 
+* Bump sdk to ">=3.0.0 <4.0.0".
 * Bump dependencies.
 
 ## 0.4.1
