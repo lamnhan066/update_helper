@@ -1,3 +1,7 @@
+## 0.5.1
+
+* Support version with format "major.minor.patch" better.
+
 ## 0.5.0
 
 * Bump dependencies.

@@ -124,7 +124,7 @@ class UpdateHelper {
     final currentVersion = packageInfo.version;
     _print('current version: $currentVersion');
 
-    if (config.latestVersion!.compareTo(currentVersion) <= 0) {
+    if (config.latestVersion!.satisfiedWith('<=$currentVersion')) {
       _print('Current version is up to date');
       return;
     }
