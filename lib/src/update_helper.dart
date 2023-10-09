@@ -10,7 +10,7 @@ part 'models/stateful_alert.dart';
 part 'models/update_platform_config.dart';
 
 class UpdateHelper {
-  /// Create instance for UpdateHelper
+  /// Create instance for UpdateHelper.
   static final instance = UpdateHelper._();
 
   UpdateHelper._();
@@ -22,7 +22,7 @@ class UpdateHelper {
   bool get isAvailable => _isAvailable;
   bool _isAvailable = false;
 
-  /// Is force update ([forceUpdate] is `true` or the current version is banned)
+  /// Is force update ([forceUpdate] is `true` or the current version is banned).
   bool get isForceUpdate => _isForceUpdate;
   bool _isForceUpdate = false;
 
@@ -43,7 +43,7 @@ class UpdateHelper {
 
     /// Use `satisfied_version` package to compare with current version to force update.
     ///
-    /// Ex: ["<=1.0.0"] means the app have to update if current version <= 1.0.0
+    /// Ex: ["<=1.0.0"] means the app have to update if current version <= 1.0.0.
     List<String> bannedVersions = const [],
 
     /// Only show the update dialog when the current version is banned or
@@ -55,17 +55,17 @@ class UpdateHelper {
 
     /// Content of the dialog (No force).
     ///
-    /// `%currentVersion` will be replaced with the current version
-    /// `%latestVersion` wull be replaced with the latest version
+    /// `%currentVersion` will be replaced with the current version.
+    /// `%latestVersion` wull be replaced with the latest version.
     String content = 'New version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
         'Do you want to update?',
 
-    /// OK button text
+    /// OK button text.
     String okButtonText = 'OK',
 
-    /// Later button text
+    /// Later button text.
     String laterButtonText = 'Later',
 
     /// Content of the dialog in force mode.
@@ -84,7 +84,7 @@ class UpdateHelper {
     /// Changelogs text: 'Changelogs' -> 'Changelogs:'
     String changelogsText = 'Changelogs',
 
-    /// Show this text if the Store cannot be opened
+    /// Show this text if the Store cannot be opened.
     ///
     /// `%error` will be replaced with the error log.
     String failToOpenStoreError = 'Got an error when trying to open the Store, '
@@ -129,7 +129,7 @@ class UpdateHelper {
       return;
     }
 
-    // Update available
+    // Update available.
     _isAvailable = true;
 
     if (!forceUpdate && SatisfiedVersion.list(currentVersion, bannedVersions)) {
@@ -137,7 +137,7 @@ class UpdateHelper {
       forceUpdate = true;
     }
 
-    // Current version needs to force update
+    // Current version needs to force update.
     if (forceUpdate) {
       _isForceUpdate = true;
     }
@@ -169,14 +169,14 @@ class UpdateHelper {
       // ignore: avoid_print
       _isDebug ? debugPrint('[Update Helper] $object') : null;
 
-  /// Open the store
+  /// Open the store.
   static Future<void> openStore({
     String? packageName,
 
-    /// Use this Url if any error occurs
+    /// Use this Url if any error occurs.
     String? fallbackUrl,
 
-    /// Print debug log
+    /// Print debug log.
     bool debugLog = false,
   }) async {
     try {

@@ -1,3 +1,8 @@
+## 0.6.0
+
+* Update comments.
+* Update homepage URL.
+
 ## 0.5.2
 
 * Improve CHANGELOG.

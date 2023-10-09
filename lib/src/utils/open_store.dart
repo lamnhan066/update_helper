@@ -6,13 +6,13 @@ import 'package:update_helper/src/utils/reload_web/reload_web.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 Future<void> openStoreImpl(
-  /// Package name
+  /// Package name.
   String packageName,
 
-  /// Custom store URL
+  /// Custom store URL.
   String? storeUrl,
 
-  /// On print debug log
+  /// On print debug log.
   Function(String) onPrint,
 ) async {
   try {

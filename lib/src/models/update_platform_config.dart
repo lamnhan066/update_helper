@@ -23,27 +23,28 @@ class UpdatePlatformConfig {
 
 /// Update configuration for each platform
 class UpdateConfig {
-  /// Default update configuration for all platforms
+  /// Default update configuration for all platforms.
   final UpdatePlatformConfig? defaultConfig;
 
-  /// Update configuration for android
+  /// Update configuration for android.
   final UpdatePlatformConfig? android;
 
-  /// Update configuration for ios
+  /// Update configuration for ios.
   final UpdatePlatformConfig? ios;
 
-  /// Update configuration for web
+  /// Update configuration for web.
   final UpdatePlatformConfig? web;
 
-  /// Update configuration for windows
+  /// Update configuration for windows.
   final UpdatePlatformConfig? windows;
 
-  /// Update configuration for linux
+  /// Update configuration for linux.
   final UpdatePlatformConfig? linux;
 
-  /// Update configuration for macos
+  /// Update configuration for macos.
   final UpdatePlatformConfig? macos;
 
+  /// Update configuration for fuchsia.
   final UpdatePlatformConfig? fuchsia;
 
   UpdateConfig({
