@@ -1,3 +1,7 @@
+## 0.6.1
+
+* Change `package_info_plus version` to `^4.2.0`.
+
 ## 0.6.0
 
 * Update comments.

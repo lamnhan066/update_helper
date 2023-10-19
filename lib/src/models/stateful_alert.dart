@@ -2,7 +2,6 @@ part of '../update_helper.dart';
 
 class _StatefulAlert extends StatefulWidget {
   const _StatefulAlert({
-    Key? key,
     required this.forceUpdate,
     required this.title,
     required this.content,
@@ -15,7 +14,7 @@ class _StatefulAlert extends StatefulWidget {
     required this.currentVersion,
     required this.packageInfo,
     required this.failToOpenStoreError,
-  }) : super(key: key);
+  });
 
   final bool forceUpdate;
   final String title;
