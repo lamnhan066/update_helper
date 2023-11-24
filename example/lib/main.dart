@@ -31,6 +31,7 @@ class _MyAppState extends State<MyApp> {
         updateConfig: UpdateConfig(
           defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
         ),
+        changelogs: ['Improve performances', 'Update UI'],
         isDebug: true,
       );
 
@@ -43,6 +44,7 @@ class _MyAppState extends State<MyApp> {
             defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
           ),
           onlyShowDialogWhenBanned: true,
+          changelogs: ['Improve performances', 'Update UI'],
           isDebug: true,
         );
       }
