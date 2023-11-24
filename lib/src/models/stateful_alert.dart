@@ -52,7 +52,7 @@ class _StatefulAlertState extends State<_StatefulAlert> {
             style: const TextStyle(fontSize: 15),
           ),
           if (widget.changelogs.isNotEmpty) ...[
-            const Divider(),
+            const Center(child: SizedBox(width: 230, child: Divider())),
             Text(
               '${widget.changelogsText}:',
               style: const TextStyle(fontSize: 15),
@@ -73,38 +73,6 @@ class _StatefulAlertState extends State<_StatefulAlert> {
               ],
             ),
           const SizedBox(height: 20),
-          if (errorText.isNotEmpty)
-            Text(
-              widget.failToOpenStoreError.replaceAll('%error', errorText),
-              style: const TextStyle(fontSize: 13, color: Colors.red),
-            ),
-          if (widget.changelogs.isNotEmpty) ...[
-            const Divider(),
-            Text(
-              '${widget.changelogsText}:',
-              style: const TextStyle(fontSize: 15),
-            ),
-            const SizedBox(height: 4),
-          ],
-          if (widget.changelogs.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final text in widget.changelogs) ...[
-                  Text(
-                    '- $text',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(height: 4),
-                ]
-              ],
-            ),
-          // const SizedBox(height: 20),
-          if (errorText.isNotEmpty)
-            Text(
-              widget.failToOpenStoreError.replaceAll('%error', errorText),
-              style: const TextStyle(fontSize: 13, color: Colors.red),
-            ),
         ],
       ),
       buttons: [
