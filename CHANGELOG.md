@@ -1,3 +1,7 @@
+## 0.7.1
+
+* Fixes duplicated changelog.
+
 ## 0.7.0
 
 * Bump dependencies.
