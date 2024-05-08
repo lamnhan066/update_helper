@@ -49,6 +49,35 @@ class _MyAppState extends State<MyApp> {
         );
       }
 
+      print('Show a custom dialog');
+      if (mounted) {
+        await UpdateHelper.instance.initial(
+          context: context,
+          updateConfig: UpdateConfig(
+            defaultConfig: UpdatePlatformConfig(latestVersion: '0.0.6'),
+          ),
+          isDebug: true,
+          dialogBuilder: (context, config) {
+            return AlertDialog.adaptive(
+              title: const Text('Update'),
+              content: const Text(
+                  'This is a custom dialog.\n\nWould you like to update?'),
+              actions: [
+                TextButton(
+                    onPressed: config.onOkPressed, child: const Text('OK')),
+                TextButton(
+                  onPressed: config.onLaterPressed,
+                  child: Text(
+                    'Later',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
+
       print('Show dialog because [onlyShowDialogWhenForce] is `true`'
           'and [forceUpdate] is `true`');
       if (mounted) {
