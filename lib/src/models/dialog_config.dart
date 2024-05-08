@@ -18,6 +18,7 @@ class DialogConfig {
     required this.packageInfo,
     required this.failToOpenStoreError,
     required this.onOkPressed,
+    required this.onLaterPressed,
   });
 
   /// Is forced update.
@@ -61,4 +62,9 @@ class DialogConfig {
   /// If there is no issue, the string will be `null`. Otherwise, an error text
   /// is returned.
   final Future<String?> Function() onOkPressed;
+
+  /// Pass this callback to the `Later` button.
+  ///
+  /// Equal to `Navigator.pop(context)`.
+  final void Function() onLaterPressed;
 }

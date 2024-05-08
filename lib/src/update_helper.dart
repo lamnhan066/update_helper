@@ -183,6 +183,7 @@ class UpdateHelper {
           }
           return null;
         },
+        onLaterPressed: () => Navigator.pop(context),
       );
 
       if (context.mounted) {

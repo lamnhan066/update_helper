@@ -30,14 +30,13 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
       ),
       if (!widget.config.forceUpdate)
         TextButton(
-          // width: 100,
+          onPressed: widget.config.onLaterPressed,
           child: Text(
             widget.config.laterButtonText,
             style: TextStyle(
               color: Theme.of(context).disabledColor,
             ),
           ),
-          onPressed: () => Navigator.pop(context),
         )
     ];
 
