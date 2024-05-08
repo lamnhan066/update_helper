@@ -41,46 +41,49 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
         )
     ];
 
-    return AlertDialog.adaptive(
-      title: Text(widget.config.title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    final title = Text(widget.config.title);
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          (widget.config.forceUpdate
+                  ? widget.config.forceUpdateContent
+                  : widget.config.content)
+              .replaceAll('%currentVersion', widget.config.currentVersion)
+              .replaceAll('%latestVersion',
+                  widget.config.updatePlatformConfig.latestVersion!),
+          style: const TextStyle(fontSize: 15),
+          textAlign: TextAlign.left,
+        ),
+        if (widget.config.changelogs.isNotEmpty) ...[
+          const Divider(),
           Text(
-            (widget.config.forceUpdate
-                    ? widget.config.forceUpdateContent
-                    : widget.config.content)
-                .replaceAll('%currentVersion', widget.config.currentVersion)
-                .replaceAll('%latestVersion',
-                    widget.config.updatePlatformConfig.latestVersion!),
+            '${widget.config.changelogsText}:',
             style: const TextStyle(fontSize: 15),
-            textAlign: TextAlign.left,
           ),
-          if (widget.config.changelogs.isNotEmpty) ...[
-            const Divider(),
-            Text(
-              '${widget.config.changelogsText}:',
-              style: const TextStyle(fontSize: 15),
-            ),
-            const SizedBox(height: 4),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final text in widget.config.changelogs) ...[
-                  Text(
-                    '- $text',
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(height: 4),
-                ]
-              ],
-            ),
-          ],
-          const SizedBox(height: 20),
+          const SizedBox(height: 4),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final text in widget.config.changelogs) ...[
+                Text(
+                  '- $text',
+                  style: const TextStyle(fontSize: 13),
+                ),
+                const SizedBox(height: 4),
+              ]
+            ],
+          ),
         ],
-      ),
+        const SizedBox(height: 20),
+      ],
+    );
+
+    return AlertDialog.adaptive(
+      title: title,
+      content: content,
       actions: actions,
     );
   }
