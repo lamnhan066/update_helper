@@ -1,3 +1,10 @@
+## 0.8.0
+
+* **BREAKING CHANGE:** Bump the `package_info_plus` version to `^8.0.0`.
+* Able to use a custom dialog via `dialogBuilder` parameter.
+* **BREAKING CHANGE:** The default dialog now uses the `AlertDialog.adaptive` instead of `AlertDialog`.
+* **BREAKING CHANGE:** Update some default texts to improve the UX.
+
 ## 0.7.1
 
 * Fixes duplicated changelog.

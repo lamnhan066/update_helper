@@ -1,6 +1,6 @@
 name: update_helper
 description: Help you easier to control the update dialog. It also supports the feature that forces the app to update to continue using.
-version: 0.7.1
+version: 0.8.0
 homepage: https://github.com/lamnhan066/update_helper
 
 environment:
@@ -10,12 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  package_info_plus: ^5.0.1
+  package_info_plus: ^8.0.0
   universal_platform: ^1.0.0+1
   url_launcher: ^6.2.1
   satisfied_version: ^0.4.1
-  http: ^1.1.0
-  boxw: ^0.0.17
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:

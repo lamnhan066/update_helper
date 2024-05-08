@@ -37,31 +37,60 @@ updateHelper.initial(
     updateConfig: UpdateConfig(
         defaultConfig: UpdatePlatformConfig(latestVersion: latestVersion),
     ),
-    title: 'Cập Nhật',
-    content: 'Đã có phiên bản cập nhật mới!\n\n'
-        'Phiên bản hiện tại: %currentVersion\n'
-        'Phiên bản mới: %latestVersion\n\n'
-        'Bạn có muốn cập nhật không?',
+    title: 'Update',
+    content: 'A new version is available!\n\n'
+        'Current version: %currentVersion\n'
+        'Latest version: %latestVersion\n\n'
+        'Would you like to update?',
     bannedVersions: bannedVersions, // <--------
     onlyShowDialogWhenBanned: false,
-    forceUpdateContent: 'Đã có phiên bản cập nhật mới!\n\n'
-        'Phiên bản hiện tại: %currentVersion\n'
-        'Phiên bản mới: %latestVersion\n\n'
-        'Bạn cần cập nhật để tiếp tục sử dụng',
-    changelogsText: 'Thay đổi',
+    forceUpdateContent: 'A new version is available!\n\n'
+        'Current version: %currentVersion\n'
+        'Latest version: %latestVersion\n\n'
+        'Please update to continue using the app.',
+    changelogsText: 'Changelogs',
     changelogs: [
-        'Cải thiện hiệu năng', 
-        'Sửa một số lỗi',
+        'Improve performances', 
+        'Minor bugfixes',
     ],
-    failToOpenStoreError: 'Đã xảy ra lỗi khi mở Store để cập nhật ứng dung, '
-        'bạn vui lòng cập nhật thủ công nhé!'
-        '\nXin lỗi vì sự bất tiện này.\n(Logs: %error)',
+    failToOpenStoreError:'Got an error when trying to open the Store, '
+        'please update the app manually. '
+        '\nSorry for the inconvenience.\n(Logs: %error)',
 );
 ```
 
 When you're setting `onlyShowDialogWhenBanned` to `true`, you can check the current version has update or not by using `updateHelper.isAvailable` variable, it will be `true` if the new version is available. You have to use this value after calling `initial`.
 
 You can also check the current version needs to force update or not by using `updateHelper.isForceUpdate`. If this value is `true`, it means the `forceUpdate` variable is `true` or the current version is is `bannedVersions`.
+
+If you want to create a custom dialog, you can create it via the `dialogBuilder`:
+
+```dart
+updateHelper.initial(
+    context: context,
+    updateConfig: UpdateConfig(
+        defaultConfig: UpdatePlatformConfig(latestVersion: latestVersion),
+    ),
+    dialogBuilder: (context, config) {
+        return AlertDialog.adaptive(
+              title: const Text('Update'),
+              content: const Text(
+                  'This is a custom dialog.\n\nWould you like to update?'),
+              actions: [
+                TextButton(
+                    onPressed: config.onOkPressed, child: const Text('OK')),
+                TextButton(
+                  onPressed: config.onLaterPressed,
+                  child: Text(
+                    'Later',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
+                ),
+              ],
+        );
+    }
+);
+```
 
 ## **Additional**
 
