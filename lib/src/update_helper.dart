@@ -1,8 +1,8 @@
-import 'package:boxw/boxw.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:satisfied_version/satisfied_version.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:update_helper/src/models/dialog_config.dart';
 import 'package:update_helper/src/utils/open_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -91,6 +91,11 @@ class UpdateHelper {
         'please update the app manually. '
         '\nSorry for the inconvenience.\n(Logs: %error)',
 
+    /// Create your own dialog widget.
+    ///
+    /// The [DefaultUpdateHelperDialog] is used by default.
+    Widget Function(BuildContext context, DialogConfig config)? dialogBuilder,
+
     /// Print debuglog.
     bool isDebug = false,
   }) async {
@@ -142,26 +147,53 @@ class UpdateHelper {
       _isForceUpdate = true;
     }
 
-    if (!onlyShowDialogWhenBanned ||
-        (onlyShowDialogWhenBanned && forceUpdate)) {
-      // ignore: use_build_context_synchronously
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => _StatefulAlert(
-            forceUpdate: forceUpdate,
-            title: title,
-            content: content,
-            forceUpdateContent: forceUpdateContent,
-            changelogs: changelogs,
-            changelogsText: changelogsText,
-            okButtonText: okButtonText,
-            laterButtonText: laterButtonText,
-            updatePlatformConfig: config,
-            currentVersion: currentVersion,
-            packageInfo: packageInfo,
-            failToOpenStoreError: failToOpenStoreError),
+    if ((!onlyShowDialogWhenBanned ||
+        (onlyShowDialogWhenBanned && forceUpdate))) {
+      final dialogConfig = DialogConfig(
+        forceUpdate: forceUpdate,
+        title: title,
+        content: content,
+        forceUpdateContent: forceUpdateContent,
+        changelogsText: changelogsText,
+        changelogs: changelogs,
+        okButtonText: okButtonText,
+        laterButtonText: laterButtonText,
+        updatePlatformConfig: config,
+        currentVersion: currentVersion,
+        packageInfo: packageInfo,
+        failToOpenStoreError: failToOpenStoreError,
+        onOkPressed: () async {
+          String packageName = packageInfo.packageName;
+
+          // For testing
+          if (_isDebug && packageName != '') {
+            packageName = packageName;
+          }
+
+          try {
+            await openStoreImpl(
+              packageName,
+              config.storeUrl,
+              (debugLog) {
+                _print(debugLog);
+              },
+            );
+          } catch (e) {
+            return e.toString();
+          }
+          return null;
+        },
       );
+
+      if (context.mounted) {
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) =>
+              dialogBuilder?.call(context, dialogConfig) ??
+              DefaultUpdateHelperDialog(config: dialogConfig),
+        );
+      }
     }
   }
 
