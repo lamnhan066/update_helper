@@ -6,8 +6,8 @@ import 'package:update_helper/src/models/dialog_config.dart';
 import 'package:update_helper/src/utils/open_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-part 'models/stateful_alert.dart';
 part 'models/update_platform_config.dart';
+part 'widgets/default_dialog.dart';
 
 class UpdateHelper {
   /// Create instance for UpdateHelper.
@@ -57,10 +57,10 @@ class UpdateHelper {
     ///
     /// `%currentVersion` will be replaced with the current version.
     /// `%latestVersion` wull be replaced with the latest version.
-    String content = 'New version is available!\n\n'
+    String content = 'A new version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
-        'Do you want to update?',
+        'Would you like to update?',
 
     /// OK button text.
     String okButtonText = 'OK',
@@ -69,10 +69,10 @@ class UpdateHelper {
     String laterButtonText = 'Later',
 
     /// Content of the dialog in force mode.
-    String forceUpdateContent = 'New version is available!\n\n'
+    String forceUpdateContent = 'A new version is available!\n\n'
         'Current version: %currentVersion\n'
         'Latest version: %latestVersion\n\n'
-        'You have to update to continue using the app!',
+        'Please update to continue using the app.',
 
     /// Show changelogs if `changelogs` is not empty.
     ///
