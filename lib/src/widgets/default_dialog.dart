@@ -77,7 +77,7 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
         ],
         if (errorText.isNotEmpty)
           Text(
-            'Error: $errorText',
+            widget.config.failToOpenStoreError.replaceAll('%error', errorText),
             style: TextStyle(color: ColorScheme.of(context).error),
           )
       ],
