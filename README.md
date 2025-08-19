@@ -4,8 +4,9 @@ Help you easier to control the update dialog. It also supports the feature that 
 
 Screenshots (Left/Above: don't force to update, Right/Below: force to update and users cannot close the dialog):
 
-<img src="https://raw.githubusercontent.com/vursin/update_helper/main/images/noforce.png" width="256"/>
-<img src="https://raw.githubusercontent.com/vursin/update_helper/main/images/force.png" width="256"/>
+## Demo
+
+[https://pub.lamnhan.dev/update_helper](https://pub.lamnhan.dev/update_helper)
 
 ## Usage
 
@@ -39,14 +40,12 @@ updateHelper.initial(
     ),
     title: 'Update',
     content: 'A new version is available!\n\n'
-        'Current version: %currentVersion\n'
-        'Latest version: %latestVersion\n\n'
+        'v%currentVersion → v%latestVersion\n\n'
         'Would you like to update?',
     bannedVersions: bannedVersions, // <--------
     onlyShowDialogWhenBanned: false,
     forceUpdateContent: 'A new version is available!\n\n'
-        'Current version: %currentVersion\n'
-        'Latest version: %latestVersion\n\n'
+        'v%currentVersion → v%latestVersion\n\n'
         'Please update to continue using the app.',
     changelogsText: 'Changelogs',
     changelogs: [
