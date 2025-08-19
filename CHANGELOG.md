@@ -1,3 +1,10 @@
+## 0.9.0
+
+* **BREAKING CHANGE:** Use package `web` to support WASM.
+* **BREAKING CHANGE:** Update the default texts.
+* Update the example.
+* Update the README.
+
 ## 0.8.0
 
 * **BREAKING CHANGE:** Bump the `package_info_plus` version to `^8.0.0`.
