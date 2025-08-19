@@ -12,7 +12,6 @@ class DefaultUpdateHelperDialog extends StatefulWidget {
 
 class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
   String errorText = '';
-  final updateHelper = UpdateHelper.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +42,8 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
     final title = Text(widget.config.title);
     final content = Column(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           (widget.config.forceUpdate
@@ -53,30 +52,34 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
               .replaceAll('%currentVersion', widget.config.currentVersion)
               .replaceAll('%latestVersion',
                   widget.config.updatePlatformConfig.latestVersion!),
-          style: const TextStyle(fontSize: 15),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
         ),
         if (widget.config.changelogs.isNotEmpty) ...[
           const Divider(),
           Text(
-            '${widget.config.changelogsText}:',
-            style: const TextStyle(fontSize: 15),
+            widget.config.changelogsText,
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final text in widget.config.changelogs) ...[
-                Text(
-                  '- $text',
-                  style: const TextStyle(fontSize: 13),
-                ),
-                const SizedBox(height: 4),
-              ]
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                for (final text in widget.config.changelogs) ...[
+                  Text(text, textAlign: TextAlign.center),
+                  if (text != widget.config.changelogs.last)
+                    const SizedBox(height: 4),
+                ]
+              ],
+            ),
           ),
         ],
-        const SizedBox(height: 20),
+        if (errorText.isNotEmpty)
+          Text(
+            'Error: $errorText',
+            style: TextStyle(color: ColorScheme.of(context).error),
+          )
       ],
     );
 
