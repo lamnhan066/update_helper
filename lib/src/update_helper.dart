@@ -56,10 +56,9 @@ class UpdateHelper {
     /// Content of the dialog (No force).
     ///
     /// `%currentVersion` will be replaced with the current version.
-    /// `%latestVersion` wull be replaced with the latest version.
+    /// `%latestVersion` will be replaced with the latest version.
     String content = 'A new version is available!\n\n'
-        'Current version: %currentVersion\n'
-        'Latest version: %latestVersion\n\n'
+        'v%currentVersion → v%latestVersion\n\n'
         'Would you like to update?',
 
     /// OK button text.
@@ -70,8 +69,7 @@ class UpdateHelper {
 
     /// Content of the dialog in force mode.
     String forceUpdateContent = 'A new version is available!\n\n'
-        'Current version: %currentVersion\n'
-        'Latest version: %latestVersion\n\n'
+        'v%currentVersion → v%latestVersion\n\n'
         'Please update to continue using the app.',
 
     /// Show changelogs if `changelogs` is not empty.
