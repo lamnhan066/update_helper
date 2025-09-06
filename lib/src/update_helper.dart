@@ -188,9 +188,13 @@ class UpdateHelper {
         await showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) =>
-              dialogBuilder?.call(context, dialogConfig) ??
-              DefaultUpdateHelperDialog(config: dialogConfig),
+          builder: (BuildContext context) {
+            return PopScope(
+              canPop: !forceUpdate,
+              child: dialogBuilder?.call(context, dialogConfig) ??
+                  DefaultUpdateHelperDialog(config: dialogConfig),
+            );
+          },
         );
       }
     }
