@@ -1,3 +1,7 @@
+## 0.9.1
+
+* Prevent users from pressing the back button to close the dialog.
+
 ## 0.9.0
 
 * **BREAKING CHANGE:** Use package `web` to support WASM.
