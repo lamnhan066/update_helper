@@ -26,14 +26,16 @@ Future<void> openStoreImpl(
       } catch (_) {
         try {
           onPrint(
-              'Android try to launch: https://play.google.com/store/apps/details?id=$packageName');
+            'Android try to launch: https://play.google.com/store/apps/details?id=$packageName',
+          );
           await launchUrlString(
             'https://play.google.com/store/apps/details?id=$packageName',
             mode: LaunchMode.externalApplication,
           );
         } catch (e) {
           onPrint(
-              'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl');
+            'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl',
+          );
           if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
             await launchUrlString(
               storeUrl,
@@ -50,8 +52,9 @@ Future<void> openStoreImpl(
 
     if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
       try {
-        final response = await http.get((Uri.parse(
-            'http://itunes.apple.com/lookup?bundleId=$packageName')));
+        final response = await http.get(
+          (Uri.parse('http://itunes.apple.com/lookup?bundleId=$packageName')),
+        );
         final json = jsonDecode(response.body);
 
         onPrint('iOS or MacOS get json from bundleId: $json');
@@ -63,12 +66,10 @@ Future<void> openStoreImpl(
         );
       } catch (e) {
         onPrint(
-            'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl');
+          'Cannot get the Store URL on iOS or MacOS, try to launch: $storeUrl',
+        );
         if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
-          await launchUrlString(
-            storeUrl,
-            mode: LaunchMode.externalApplication,
-          );
+          await launchUrlString(storeUrl, mode: LaunchMode.externalApplication);
         } else {
           rethrow;
         }
@@ -85,10 +86,7 @@ Future<void> openStoreImpl(
 
     if (storeUrl != null && await canLaunchUrlString(storeUrl)) {
       onPrint('Other platforms, try to launch: $storeUrl');
-      await launchUrlString(
-        storeUrl,
-        mode: LaunchMode.externalApplication,
-      );
+      await launchUrlString(storeUrl, mode: LaunchMode.externalApplication);
     }
   } catch (e) {
     onPrint('Cannot open the Store automatically!');

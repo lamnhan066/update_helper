@@ -32,11 +32,9 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
           onPressed: widget.config.onLaterPressed,
           child: Text(
             widget.config.laterButtonText,
-            style: TextStyle(
-              color: Theme.of(context).disabledColor,
-            ),
+            style: TextStyle(color: Theme.of(context).disabledColor),
           ),
-        )
+        ),
     ];
 
     final title = Text(widget.config.title);
@@ -50,8 +48,10 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
                   ? widget.config.forceUpdateContent
                   : widget.config.content)
               .replaceAll('%currentVersion', widget.config.currentVersion)
-              .replaceAll('%latestVersion',
-                  widget.config.updatePlatformConfig.latestVersion!),
+              .replaceAll(
+                '%latestVersion',
+                widget.config.updatePlatformConfig.latestVersion!,
+              ),
           textAlign: TextAlign.center,
         ),
         if (widget.config.changelogs.isNotEmpty) ...[
@@ -70,7 +70,7 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
                   Text(text, textAlign: TextAlign.center),
                   if (text != widget.config.changelogs.last)
                     const SizedBox(height: 4),
-                ]
+                ],
               ],
             ),
           ),
@@ -79,7 +79,7 @@ class _DefaultUpdateHelperDialogState extends State<DefaultUpdateHelperDialog> {
           Text(
             widget.config.failToOpenStoreError.replaceAll('%error', errorText),
             style: TextStyle(color: ColorScheme.of(context).error),
-          )
+          ),
       ],
     );
 

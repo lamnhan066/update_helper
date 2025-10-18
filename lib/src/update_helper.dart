@@ -57,9 +57,10 @@ class UpdateHelper {
     ///
     /// `%currentVersion` will be replaced with the current version.
     /// `%latestVersion` will be replaced with the latest version.
-    String content = 'A new version is available!\n\n'
-        'v%currentVersion → v%latestVersion\n\n'
-        'Would you like to update?',
+    String content =
+        'A new version is available!\n\n'
+            'v%currentVersion → v%latestVersion\n\n'
+            'Would you like to update?',
 
     /// OK button text.
     String okButtonText = 'OK',
@@ -68,9 +69,10 @@ class UpdateHelper {
     String laterButtonText = 'Later',
 
     /// Content of the dialog in force mode.
-    String forceUpdateContent = 'A new version is available!\n\n'
-        'v%currentVersion → v%latestVersion\n\n'
-        'Please update to continue using the app.',
+    String forceUpdateContent =
+        'A new version is available!\n\n'
+            'v%currentVersion → v%latestVersion\n\n'
+            'Please update to continue using the app.',
 
     /// Show changelogs if `changelogs` is not empty.
     ///
@@ -85,9 +87,10 @@ class UpdateHelper {
     /// Show this text if the Store cannot be opened.
     ///
     /// `%error` will be replaced with the error log.
-    String failToOpenStoreError = 'Got an error when trying to open the Store, '
-        'please update the app manually. '
-        '\nSorry for the inconvenience.\n(Logs: %error)',
+    String failToOpenStoreError =
+        'Got an error when trying to open the Store, '
+            'please update the app manually. '
+            '\nSorry for the inconvenience.\n(Logs: %error)',
 
     /// Create your own dialog widget.
     ///
@@ -169,13 +172,9 @@ class UpdateHelper {
           }
 
           try {
-            await openStoreImpl(
-              packageName,
-              config.storeUrl,
-              (debugLog) {
-                _print(debugLog);
-              },
-            );
+            await openStoreImpl(packageName, config.storeUrl, (debugLog) {
+              _print(debugLog);
+            });
           } catch (e) {
             return e.toString();
           }
@@ -191,7 +190,8 @@ class UpdateHelper {
           builder: (BuildContext context) {
             return PopScope(
               canPop: !forceUpdate,
-              child: dialogBuilder?.call(context, dialogConfig) ??
+              child:
+                  dialogBuilder?.call(context, dialogConfig) ??
                   DefaultUpdateHelperDialog(config: dialogConfig),
             );
           },
@@ -216,13 +216,9 @@ class UpdateHelper {
   }) async {
     try {
       packageName ??= (await PackageInfo.fromPlatform()).packageName;
-      await openStoreImpl(
-        packageName,
-        fallbackUrl,
-        (progress) {
-          if (debugLog) debugPrint('[UpdateHelper.openStore] $progress');
-        },
-      );
+      await openStoreImpl(packageName, fallbackUrl, (progress) {
+        if (debugLog) debugPrint('[UpdateHelper.openStore] $progress');
+      });
     } catch (_) {
       if (fallbackUrl != null && await canLaunchUrlString(fallbackUrl)) {
         await launchUrlString(fallbackUrl);
