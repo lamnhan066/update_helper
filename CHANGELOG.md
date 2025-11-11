@@ -1,3 +1,8 @@
+## 0.10.0
+
+* Bump `package_info_plus` to `v9.0.0`.
+* Bump flutter sdk >= 3.29.0, dart sdk >=3.7.0.
+
 ## 0.9.1
 
 * Prevent users from pressing the back button to close the dialog.
