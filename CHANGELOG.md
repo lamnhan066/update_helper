@@ -1,3 +1,7 @@
+## 0.11.0
+
+* Bump `package_info_plus` to `^10.1.0`.
+
 ## 0.10.0
 
 * Bump `package_info_plus` to `v9.0.0`.
